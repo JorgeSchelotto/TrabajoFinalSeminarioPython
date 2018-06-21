@@ -1,0 +1,11 @@
+Pato
+Gato
+Raton
+Pajaro
+Árbol
+Auto
+Casa
+Cuchara
+Cuchillo
+Tenedor
+Plato
