@@ -1,3 +1,4 @@
+__author__ = 'Burgos, Agustin - Schelotto, Jorge'
 # -*- coding: utf-8 -*-
 
 # Copyright 2018 autors: Burgos Agustin, Schelotto Jorge
@@ -14,11 +15,68 @@
 # THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
+import pygame
 
-class Palabras:
-    def __init__(self, nombre):
+class Palabras(pygame.sprite.Sprite):
+    def __init__(self, nombre, x, y):
+        super(Palabras, self).__init__()
         self.__palabra = nombre
+        self.__click = False
+        self.image = pygame.image.load('PalabrasImagenes/'+self.__palabra + '.png')#.convert()
+        self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
+        self.collide = False
+        self.posX = x
+        self.posY = y
 
-    def setPalabra(self):
+
+    def getPalabra(self):
         return self.__palabra
+
+    def getPalabraImagen(self):
+        return self.image
+
+    def setClick(self, bool):
+        self.__click = bool
+
+    def getClick(self):
+        return self.__click
+
+    def getRect(self):
+        return self.rect
+
+
+    def update(self,surface):
+        """Controla los eventos y coliciones de los sprites Palabras"""
+        if not self.getClick() and not self.collide:
+            self.rect.center = (self.posX, self.posY)
+
+        if self.getClick():
+            #Si se hace click en la imagen
+            self.rect.center = pygame.mouse.get_pos()
+
+        if self.collide:
+            # Si hay colision
+            x = self.image.get_rect().size[0]
+            y = self.image.get_rect().size[1]
+
+            if x > 20:
+                # Achica la imagen
+                center = self.rect.center
+                x = x - 1
+                y = y - 1
+                self.image = pygame.transform.scale(self.image, (x, y))
+                self.rect= self.image.get_rect()
+                self.rect.center = center
+                self.image = pygame.transform.rotozoom(self.image, -90, 0.8)
+            elif x <= 20:
+                # Para que no de x < 0
+                center = self.rect.center
+                self.image = pygame.transform.scale(self.image, (0, 0))
+                self.rect = self.image.get_rect()
+                self.rect.center = center
+                self.image = pygame.transform.rotozoom(self.image, -90, 0.5)
+            #self.kill()
+
+        surface.blit(self.getPalabraImagen(), self.getRect())
 

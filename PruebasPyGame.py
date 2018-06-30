@@ -1,3 +1,4 @@
+__author__ = 'Burgos, Agustin - Schelotto, Jorge'
 # -*- coding: utf-8 -*-
 
 # Copyright 2018 autors: Burgos Agustin, Schelotto Jorge
@@ -21,8 +22,9 @@
 import pygame
 from pygame.locals import *
 from Imagenes import Imagen
+from Palabras import Palabras
 
-class Game():
+class Game2():
 
     def __init__(self):
         self._running = True
@@ -45,7 +47,7 @@ class Game():
         pygame.quit()
         print("Quit!")
 
-    def _check_events(self):
+    def _check_events(self, Player):
         """
             Verifico los eventos dentro del loop
         """
@@ -54,38 +56,60 @@ class Game():
                 self._running = False
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    self.screen = pygame.display.set_mode((1270, 720))
+                    self._running = False
+            elif event.type == MOUSEBUTTONDOWN:
+                if Player.getRect().collidepoint(event.pos):
+                    print('Lo toque')
+                    Player.setClick(True)
+                    #Player.update(self.screen)
+                    #fuente = pygame.font.Font(None, 72)
+                    #titulo = fuente.render('Lo toque', True, pygame.Color("red"))
+                    #titulo_rect = titulo.get_rect()
+                    #titulo_rect.centerx = self.screen.get_rect().centerx
+                    #self.screen.blit(titulo, titulo_rect)
+            elif event.type == MOUSEBUTTONUP:
+                Player.setClick(False)
+
+
+
+
 
     def execute(self):
         self.on_init()
 
-        loop = 0
-        x = 200
-        pato = Imagen('perro')
+        #loop = 0
+        #x = 200
+        perro = Palabras('perro')
+        perro.getRect().center = (300, 200)
+        imagenPerro = Imagen('perro')
 
         while self._running:
-            self.clock.tick(5)
+            self.clock.tick(60)
 
-            if x >= 640:
+            """if x >= 640:
                 x = 0
             else:
-                x += 50
+                x += 50"""
 
             self.screen.fill(self.BLUE)
-            pygame.draw.rect(self.screen, self.WHITE, (x, 200, 100, 100))
+            #pygame.draw.rect(self.screen, self.WHITE, (x, 200, 100, 100))
+            #imagen = perro.getPalabraImagen()
+            #palabraImagen= imagenPerro.getImagen()
+            #self.screen.blit(perro.getPalabraImagen(), (100, 100))
+            self.screen.blit(imagenPerro.getImagen(), (150, 400))
 
 
-            imagen = pygame.image.load(pato.getImagen())
-            self.screen.blit(imagen, (x, 100))
+            #loop += 1
+            #print("Run! " + str(loop))
+            self._check_events(perro)
+            perro.update(self.screen)
             pygame.display.update()
+            pygame.time.Clock()
 
-            loop += 1
-            print("Run! " + str(loop))
-            self._check_events()
 
         self.clean_up()
 
 
 if __name__ == "__main__":
-    game = Game()
-game.execute()
+    game = Game2()
+    game.execute()

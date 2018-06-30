@@ -1,3 +1,4 @@
+__author__ = 'Burgos, Agustin - Schelotto, Jorge'
 # -*- coding: utf-8 -*-
 
 # Copyright 2018 autors: Burgos Agustin, Schelotto Jorge
@@ -14,14 +15,33 @@
 # THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
+import pygame
+from pygame.locals import *
 
-class Imagen:
+class Imagen(pygame.sprite.Sprite):
     def __init__(self, nombre):
+        super(Imagen, self).__init__()
         self.__nombre = nombre
-        self.__imagen = 'Imagenes/' + self.__nombre + '.jpg'
+        self.image = pygame.image.load('Imagenes/'+self.__nombre + '.png') #'Imagenes/' + self.__nombre + '.png'
+        self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
+
+    def getNombre(self):
+        return self.__nombre
 
     def getImagen(self):
-        return self.__imagen
+        return self.image
+
+    def getRect(self):
+        return self.rect
+
+    def update(self, surface):
+        surface.blit(self.getImagen(), self.getRect())
+
+
+
+
+
 
 
 

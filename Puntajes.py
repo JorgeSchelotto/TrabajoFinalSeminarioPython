@@ -1,3 +1,4 @@
+__author__ = 'Burgos, Agustin - Schelotto, Jorge'
 # -*- coding: utf-8 -*-
 
 # Copyright 2018 autors: Burgos Agustin, Schelotto Jorge
