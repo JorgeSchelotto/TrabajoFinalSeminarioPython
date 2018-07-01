@@ -18,11 +18,11 @@ __author__ = 'Burgos, Agustin - Schelotto, Jorge'
 import pygame
 
 class Palabras(pygame.sprite.Sprite):
-    def __init__(self, nombre, x, y):
+    def __init__(self, ruta, nombre, x, y):
         super(Palabras, self).__init__()
         self.__palabra = nombre
         self.__click = False
-        self.image = pygame.image.load('PalabrasImagenes/'+self.__palabra + '.png')#.convert()
+        self.image = pygame.image.load(ruta)#.convert()
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.collide = False

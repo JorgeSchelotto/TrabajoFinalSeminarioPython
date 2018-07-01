@@ -1,0 +1,6 @@
+abanico
+antena
+edificio
+empanada
+iglú
+iguana
