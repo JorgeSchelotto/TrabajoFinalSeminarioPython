@@ -98,50 +98,79 @@ class Main:
 
 
     def randomEnemigos(self):
-        """Genera un diccionario aleatorio con los nombres y las direcciones de los archivos de letras"""
+        """Genera un diccionario aleatorio y sin repeticiones con los nombres y las direcciones de los archivos de letras"""
         game_folder = os.path.dirname(__file__)
 
         letra = ['A', 'E', 'I', 'O', 'U']
 
         con=[]
-        while len(con) < 4:
-            valor = random.randrange(4)
+        while len(con) != 3:
+            valor = random.randrange(5)
+            print(valor)
             if valor not in con:
                 con.append(valor)
+
 
         lista = []
         for num in con:
             lista.append(letra[num])
+
 
         pal2 = {}
         for letras in lista:
             pal2[letras.replace('\n', '')] = os.path.join(
                 os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), letras + '.png').replace('\n', '')))
 
+
         return pal2
 
-    def randomPlayers(self):
-        """Genera un diccionario aleatorio con los nombres y las direcciones de los archivos de imagenes"""
+    def randomPlayers(self, dic_letras):
+        """Genera un diccionario aleatorio y sin repeticiones con los nombres y las direcciones de los archivos de imagenes"""
         game_folder = os.path.dirname(__file__)
         folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), "Imagenes"), 'facil'), 'facil.txt')
 
         file = open(folder, 'r')
-
+        #Creo lista con las palabras del archivo
         pal = []
         for palabras in file:
+            print(palabras)
             pal.append(palabras.replace('\n', ''))
 
         file.close()
 
+        # Creo una lista de numeros aleatorios.
         con = []
         while len(con) < 4:
             valor = random.randrange(6)
             if valor not in con:
                 con.append(valor)
+        print(con)
 
         lista = []
-        for num in con:
-            lista.append(pal[num])
+        num = random.randrange(len(pal))
+        print('Tamaño del archivo: ', len(pal))
+        print(dic_letras)
+        letras =[]
+        repetida = ''
+        while len(lista) < 3:
+            if pal[num][0].upper() in dic_letras:
+                if pal[num] not in lista:
+                    if pal[num][0].upper() not in letras:
+                        lista.append(pal[num])
+                        letras.append(pal[num][0].upper())
+                    repetida = pal[num]
+                print(repetida)
+            num = random.randrange(len(pal))
+            print('no se cumple condicion')
+            print(lista)
+            #buscar mas con I y con O
+        for palabra in pal:
+            if lista[random.randrange(2)][0] == palabra[0] and lista[random.randrange(2)] != palabra:
+                lista.append(palabra)
+                break
+        print(lista)
+
+
 
 
 
@@ -169,9 +198,9 @@ class Main:
         letras = []
         for key, value in dic_letras.items():
             letras.append(Imagen(key, value, letras_x, letras_y, H, W))
-            letras_x = letras_x + 500
+            letras_x = letras_x + 475
 
-        dic_jugadores = self.randomPlayers().copy()
+        dic_jugadores = self.randomPlayers(dic_letras).copy()
         jugadores = []
 
         PALABRAS_X = 200
