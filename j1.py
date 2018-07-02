@@ -98,18 +98,30 @@ class Main:
 
 
     def randomEnemigos(self):
+        """Genera un diccionario aleatorio con los nombres y las direcciones de los archivos de letras"""
         game_folder = os.path.dirname(__file__)
-        folder = os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), "A.png")
-        file = open()
-        con = []
-        while len(con) < 3:
-            valor = random.randrange(3)
+
+        letra = ['A', 'E', 'I', 'O', 'U']
+
+        con=[]
+        while len(con) < 4:
+            valor = random.randrange(4)
             if valor not in con:
                 con.append(valor)
-        return con
+
+        lista = []
+        for num in con:
+            lista.append(letra[num])
+
+        pal2 = {}
+        for letras in lista:
+            pal2[letras.replace('\n', '')] = os.path.join(
+                os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), letras + '.png').replace('\n', '')))
+
+        return pal2
 
     def randomPlayers(self):
-        """Genera un diccionario con los nombres y las direcciones de los archivos de imagenes"""
+        """Genera un diccionario aleatorio con los nombres y las direcciones de los archivos de imagenes"""
         game_folder = os.path.dirname(__file__)
         folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), "Imagenes"), 'facil'), 'facil.txt')
 
@@ -131,6 +143,8 @@ class Main:
         for num in con:
             lista.append(pal[num])
 
+
+
         pal2 = {}
         for palabras in lista:
             pal2[palabras.replace('\n', '')] = os.path.join(
@@ -148,8 +162,14 @@ class Main:
 
         self.on_init()
         iconos = [Icono('quit', os.path.join(img_folder, "00_flecha1.png"), 1250, 100 )]
-        letras = [Imagen('A', A_folder, 200, 320, H, W), Imagen('E', E_folder, 450, 310, H, W), Imagen('I',I_folder, 700, 315, H, W),
-                  Imagen('O', O_folder, 940, 305, H, W),Imagen('U', U_folder, 1175, 317, H, W),]
+
+        dic_letras = self.randomEnemigos()
+        letras_x = 200
+        letras_y= 320
+        letras = []
+        for key, value in dic_letras.items():
+            letras.append(Imagen(key, value, letras_x, letras_y, H, W))
+            letras_x = letras_x + 500
 
         dic_jugadores = self.randomPlayers().copy()
         jugadores = []
@@ -159,11 +179,8 @@ class Main:
         for nombre, ruta in dic_jugadores.items():
             jugadores.append(Palabras(ruta, nombre, PALABRAS_X, PALABRAS_Y))
             PALABRAS_X = PALABRAS_X + 320
-        #for jugador in lista_jugadores:
 
 
-
-        #enemys = [Imagen('perro')]
         while self.running:
             """Loop principal del programa"""
             self.clock.tick(self.FPS)
