@@ -19,7 +19,7 @@ import pygame
 
 class Palabras(pygame.sprite.Sprite):
     def __init__(self, ruta, nombre, x, y):
-        super(Palabras, self).__init__()
+        super().__init__()
         self.__palabra = nombre
         self.__click = False
         self.image = pygame.image.load(ruta)#.convert()
