@@ -76,7 +76,6 @@ class Palabras(pygame.sprite.Sprite):
                 self.rect = self.image.get_rect()
                 self.rect.center = center
                 self.image = pygame.transform.rotozoom(self.image, -90, 0.5)
-            #self.kill()
 
         surface.blit(self.getPalabraImagen(), self.getRect())
 
