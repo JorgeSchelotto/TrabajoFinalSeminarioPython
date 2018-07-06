@@ -24,6 +24,7 @@ from Imagenes import Imagen
 import os
 import random
 from Palabras import Palabras
+import MainMenu
 
 
 # Set Up el arte y sonido (assets)
@@ -40,7 +41,7 @@ W = 170
 
 
 
-class Main:
+class JuegoUno:
     """Menu principal del juego"""
     def __init__(self):
         self.running = True
@@ -78,6 +79,9 @@ class Main:
                     if icono.rect.collidepoint(event.pos):
                         if icono.name == 'quit':
                             self.running = False
+
+
+
                         print('Click icono: {}'.format(icono.name))
                 for Player in player:
                     if Player.getRect().collidepoint(event.pos):
@@ -196,6 +200,7 @@ class Main:
         letras_x = 200
         letras_y= 320
         letras = []
+
         for key, value in dic_letras.items():
             letras.append(Imagen(key, value, letras_x, letras_y, H, W))
             letras_x = letras_x + 475
@@ -215,9 +220,10 @@ class Main:
             self.clock.tick(self.FPS)
             self.screen.blit(self.image, (0, 0))
 
+            self.check_events(iconos, jugadores, letras)
+
 
             # Update
-            self.check_events(iconos, jugadores, letras)
             for icono in iconos:
                 icono.update(self.screen)
                 if icono.rect.collidepoint(pygame.mouse.get_pos()):
@@ -232,7 +238,6 @@ class Main:
                 jugador.update(self.screen)
 
 
-
             # Draw / Render
 
 
@@ -240,8 +245,13 @@ class Main:
             # update la pantalla
             pygame.display.update()
 
+
+
         self.clean_up()
 
+        mainMenu = MainMenu.MainMenu()
+        mainMenu.execute()
+
 if __name__ == "__main__":
-    game = Main()
+    game = JuegoUno()
     game.execute()

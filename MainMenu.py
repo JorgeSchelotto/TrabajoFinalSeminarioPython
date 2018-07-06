@@ -19,7 +19,7 @@ __author__ = 'Burgos, Agustin - Schelotto, Jorge'
 import pygame
 from pygame.locals import *
 from Icono import Icono
-from ejercicioDePractica import Game
+import JuegoUno
 import os
 
 # Set Up el arte y sonido (assets)
@@ -31,7 +31,7 @@ j2_folder = os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j2
 j3_folder = os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j3"), "logo_J3b.png")
 j4_folder = os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "logo_J4.png")
 
-class Main:
+class MainMenu:
     """Menu principal del juego"""
     def __init__(self):
         self.running = True
@@ -40,6 +40,7 @@ class Main:
         self.FPS = 30
         self.load = pygame.image.load(os.path.join(img_folder, "fondo_main.png")).convert()
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
+        self.juego = ''
 
 
 
@@ -69,9 +70,13 @@ class Main:
                     if icono.rect.collidepoint(event.pos):
                         if icono.name == 'quit':
                             self.running = False
+
                         print('Click icono: {}'.format(icono.name))
-                        #game = Game()
-                        #game.execute()
+                        if icono.name == 'j1':
+                            self.juego = 'j1'
+                            self.running = False
+
+
 
 
 
@@ -110,8 +115,12 @@ class Main:
 
         self.clean_up()
 
+        if self.juego == 'j1':
+            j1 = JuegoUno.JuegoUno()
+            j1.execute()
+
 if __name__ == "__main__":
-    game = Main()
-    game.execute()
+    mainMenu = MainMenu()
+    mainMenu.execute()
 
 

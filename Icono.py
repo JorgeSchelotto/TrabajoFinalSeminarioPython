@@ -38,7 +38,7 @@ class Icono(pygame.sprite.Sprite):
 
 
     def update(self, surface):
-        """Maneja eventos propios de la clase"""
+        """Maneja eventos propios de la clase icono"""
 
         if self.hover:
             if self.rect.center == self.CENTER and self.rect.center[0] > self.CENTER[0] - 25 :
