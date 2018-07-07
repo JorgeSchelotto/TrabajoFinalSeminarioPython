@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Implementación del juego numero 1. Al cerrarlo volvera al menu principal"""
+"""Implementación del juego numero 4. Al cerrarlo volvera al menu principal"""
 
 # Copyright 2018 autors: Burgos Agustin, Schelotto Jorge
 #
@@ -25,8 +25,8 @@ try:
     from Imagenes import Imagen
     import os
     import random
-    from Palabras import Palabras
     import MainMenu
+    from Palabras import Palabras
 except ImportError as error:
     print(error, 'Error de importacion en modulo')
 
@@ -43,27 +43,22 @@ __status__ = 'Production'
 # Set Up el arte y sonido (assets)
 GAME_FOLDER = os.path.dirname(__file__)
 FOLDER = os.path.join(GAME_FOLDER, "Imagenes")
-IMAGE_FOLDER = os.path.join(FOLDER, "j1")
-A_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j1"), "A.png")
-E_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j1"), "E.png")
-I_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j1"), "I.png")
-O_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j1"), "O.png")
-U_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j1"), "U.png")
+IMAGE_FOLDER = os.path.join(FOLDER, "j4")
 MUSIC_FOLDER = None
 SOUNDS_FOLDER = None
-HEIGHT = 180
-WEIGHT = 170
+HEIGHT = 200
+WEIGHT = 80
 
 
 
-class JuegoUno:
+class JuegoCuatro:
     """Menu principal del juego"""
     def __init__(self):
         self.running = True
         self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
         self.FPS = 30
-        self.load = pygame.image.load(os.path.join(IMAGE_FOLDER, "00_fondo-01.png")).convert()
+        self.load = pygame.image.load(os.path.join(IMAGE_FOLDER, "fondo-04.png")).convert()
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
 
 
@@ -102,16 +97,14 @@ class JuegoUno:
                             pass
                 for Player in player:
                     if Player.getRect().collidepoint(event.pos):
-                        #print('Click palabra')
                         Player.setClick(True)
             elif event.type == MOUSEBUTTONUP:
-                fin = 3
                 for Player in player:
                     Player.setClick(False)
                     for Enemigo in enemigos:
                         if pygame.sprite.collide_rect(Player, Enemigo):
                             print('Toque un enemigo!', Enemigo.getNombre())
-                            if Player.getPalabra()[0].upper() == Enemigo.getNombre():
+                            if Player.getPalabra().upper() == Enemigo.getNombre():
                                 print(Player.getPalabra()[0].upper(), Enemigo.getNombre() )
                                 Player.rect.center = Enemigo.rect.center
                                 print('Palabra {} toco a Imagen {}. Suma 10!'.format(Player.getPalabra(), Enemigo.getNombre()))
@@ -121,12 +114,15 @@ class JuegoUno:
     def randomEnemigos(self):
         """Genera un diccionario aleatorio y sin repeticiones con los nombres y las direcciones de los archivos de letras"""
         game_folder = os.path.dirname(__file__)
+        enemies_folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "imagenes"), "faciles"), "palabras")
+        lista_enemigos = os.listdir(enemies_folder)
 
         letra = ['A', 'E', 'I', 'O', 'U']
 
+
         con=[]
-        while len(con) != 3:
-            valor = random.randrange(5)
+        while len(con) != 4:
+            valor = random.randrange(len(lista_enemigos)-1)
             print(valor)
             if valor not in con:
                 con.append(valor)
@@ -134,72 +130,63 @@ class JuegoUno:
 
         lista = []
         for num in con:
-            lista.append(letra[num])
+            lista.append(lista_enemigos[num])
 
 
         pal2 = {}
-        for letras in lista:
-            pal2[letras.replace('\n', '')] = os.path.join(
-                os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), letras + '.png').replace('\n', '')))
+        for palabras in lista:
+            pal2[palabras.replace('\n', '').upper()] = os.path.join(enemies_folder, palabras)
 
+        print(pal2)
 
         return pal2
 
     def randomPlayers(self, dic_letras):
         """Genera un diccionario aleatorio y sin repeticiones con los nombres y las direcciones de los archivos de imagenes"""
         game_folder = os.path.dirname(__file__)
-        folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), "Imagenes"), 'facil'), 'facil.txt')
+        folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "Imagenes"), 'faciles'), 'imagenes')
+        players_folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "imagenes"), "faciles"), "palabras")
+        lista_players = os.listdir(players_folder)
 
-        file = open(folder, 'r')
-        #Creo lista con las palabras del archivo
-        pal = []
-        for palabras in file:
-            print(palabras)
-            pal.append(palabras.replace('\n', ''))
 
-        file.close()
 
         # Creo una lista de numeros aleatorios.
         con = []
         while len(con) < 4:
-            valor = random.randrange(6)
+            valor = random.randrange(len(lista_players)-1)
             if valor not in con:
                 con.append(valor)
         print(con)
 
         lista = []
-        num = random.randrange(len(pal))
-        print('Tamaño del archivo: ', len(pal))
+        num = 0
+        print('Tamaño del archivo: ', len(lista_players))
         print(dic_letras)
         letras =[]
-        repetida = ''
-        while len(lista) < 3:
-            if pal[num][0].upper() in dic_letras:
-                if pal[num] not in lista:
-                    if pal[num][0].upper() not in letras:
-                        lista.append(pal[num])
-                        letras.append(pal[num][0].upper())
-                    repetida = pal[num]
-                print(repetida)
-            num = random.randrange(len(pal))
+        while len(lista) < 4:
+            if lista_players[num].upper() in dic_letras:
+                print(lista_players[num].upper())
+                # si esta en el diccionario de palabras
+                lista.append(lista_players[num])
+                letras.append(lista_players[num][0].upper())
+            num = num +1
+
             print('no se cumple condicion')
+            print(lista_players[num].upper())
+            print(dic_letras)
             print(lista)
             #buscar mas con I y con O
-        for palabra in pal:
+        for palabra in lista_players:
             if lista[random.randrange(2)][0] == palabra[0] and lista[random.randrange(2)] != palabra:
                 lista.append(palabra)
                 break
         print(lista)
 
-
-
-
-
         pal2 = {}
         for palabras in lista:
             pal2[palabras.replace('\n', '')] = os.path.join(
                 os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), "Imagenes"),
-                             'facil'), palabras + '.png').replace('\n', '')
+                             'facil'), palabras).replace('\n', '')
 
         print(pal2)
 
@@ -211,18 +198,17 @@ class JuegoUno:
         """Loop del juego"""
 
         self.on_init()
-        iconos = [Icono('quit', os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J1.png"), 1300, 50),
-                  Icono('music_on', os.path.join(IMAGE_FOLDER, "musica_ON_J1.png"), 1300, 155),
-                  Icono('help', os.path.join(IMAGE_FOLDER, "ayuda_j1.png"), 1300, 255)]
+        iconos = [Icono('quit', os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J4.png"), 1300, 50),
+                  Icono('music_on', os.path.join(IMAGE_FOLDER, "musica_ON_J4.png"), 1300, 135),
+                  Icono('help', os.path.join(IMAGE_FOLDER, "ayuda_J4.png"), 1300, 220)]
 
         dic_letras = self.randomEnemigos()
-        letras_x = 200
+        letras_x = 160
         letras_y= 320
         letras = []
-
         for key, value in dic_letras.items():
             letras.append(Imagen(key, value, letras_x, letras_y, HEIGHT, WEIGHT))
-            letras_x = letras_x + 475
+            letras_x = letras_x + 345
 
         dic_jugadores = self.randomPlayers(dic_letras).copy()
         jugadores = []
@@ -234,15 +220,17 @@ class JuegoUno:
             PALABRAS_X = PALABRAS_X + 320
 
 
+
         while self.running:
+
+
             """Loop principal del programa"""
             self.clock.tick(self.FPS)
             self.screen.blit(self.image, (0, 0))
 
-            self.check_events(iconos, jugadores, letras)
-
 
             # Update
+            self.check_events(iconos, jugadores, letras)
             for icono in iconos:
                 icono.update(self.screen)
                 if icono.rect.collidepoint(pygame.mouse.get_pos()):
@@ -257,6 +245,7 @@ class JuegoUno:
                 jugador.update(self.screen)
 
 
+
             # Draw / Render
 
 
@@ -264,13 +253,10 @@ class JuegoUno:
             # update la pantalla
             pygame.display.update()
 
-
-
         self.clean_up()
-
         mainMenu = MainMenu.MainMenu()
         mainMenu.execute()
 
 if __name__ == "__main__":
-    game = JuegoUno()
+    game = JuegoCuatro()
     game.execute()

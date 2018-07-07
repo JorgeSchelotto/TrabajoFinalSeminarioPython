@@ -1,5 +1,8 @@
-__author__ = 'Burgos, Agustin - Schelotto, Jorge'
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+"""Implementación del menu principal. Clase base para acceder a los juegos de la suit.
+Al cerrarla, se cerrara el programa"""
 
 # Copyright 2018 autors: Burgos Agustin, Schelotto Jorge
 #
@@ -8,7 +11,8 @@ __author__ = 'Burgos, Agustin - Schelotto, Jorge'
 # the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
 # and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice
+# shall be included in all copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
 #  TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -16,20 +20,38 @@ __author__ = 'Burgos, Agustin - Schelotto, Jorge'
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-import pygame
-from pygame.locals import *
-from Icono import Icono
-import JuegoUno
-import os
+try:
+
+    import pygame
+    from pygame.locals import *
+    from Icono import Icono
+    import JuegoUno
+    import JuegoDos
+    import JuegoTres
+    import JuegoCuatro
+    import os
+except ImportError as error:
+    print(error, 'Error de importacion en modulo')
+
+
+__author__ = 'Burgos, Agustin - Schelotto, Jorge'
+__copyright__ = 'Copyright 2018, Burgos Schelotto'
+__license__ = 'MIT'
+__version__ = '0.0.1'
+__maintainer__ = 'Burgos, Agustin - Schelotto, Jorge'
+__email__ = ' agburgos83@gmail.com - jasfotografo@hotmail.com'
+__status__ = 'Production'
 
 # Set Up el arte y sonido (assets)
-game_folder = os.path.dirname(__file__)
-folder = os.path.join(game_folder, "Imagenes")
-img_folder = os.path.join(folder, "main")
-j1_folder = os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), "logo_J1.png")
-j2_folder = os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j2"), "logo_J2.png")
-j3_folder = os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j3"), "logo_J3b.png")
-j4_folder = os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "logo_J4.png")
+GAME_FOLDER = os.path.dirname(__file__)
+FOLDER = os.path.join(GAME_FOLDER, "Imagenes")
+IMAGE_FOLDER = os.path.join(FOLDER, "main")
+JUEGOUNO_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j1"), "logo_J1.png")
+JUEGODOS_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j2"), "logo_J2.png")
+JUEGOTRES_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j3"), "logo_J3b.png")
+JUEGOCUATRO_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j4"), "logo_J4.png")
+MUSIC_FOLDER = None
+SOUNDS_FOLDER = None
 
 class MainMenu:
     """Menu principal del juego"""
@@ -38,7 +60,7 @@ class MainMenu:
         self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
         self.FPS = 30
-        self.load = pygame.image.load(os.path.join(img_folder, "fondo_main.png")).convert()
+        self.load = pygame.image.load(os.path.join(IMAGE_FOLDER, "fondo_main.png")).convert()
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
         self.juego = ''
 
@@ -70,11 +92,25 @@ class MainMenu:
                     if icono.rect.collidepoint(event.pos):
                         if icono.name == 'quit':
                             self.running = False
-
-                        print('Click icono: {}'.format(icono.name))
-                        if icono.name == 'j1':
+                        elif icono.name == 'music':
+                            pass
+                        elif icono.name == 'credits':
+                            pass
+                        elif icono.name == 'help':
+                            pass
+                        elif icono.name == 'j1':
                             self.juego = 'j1'
                             self.running = False
+                        elif icono.name == 'j2':
+                            self.juego = 'j2'
+                            self.running = False
+                        elif icono.name == 'j3':
+                            self.juego = 'j3'
+                            self.running = False
+                        elif icono.name == 'j4':
+                            self.juego = 'j4'
+                            self.running = False
+
 
 
 
@@ -84,8 +120,11 @@ class MainMenu:
         """Loop del juego"""
 
         self.on_init()
-        iconos = [Icono('j1', j1_folder, 240, 610), Icono('j2', j2_folder, 540, 610), Icono('j3',j3_folder, 840, 610),
-                  Icono('j4', j4_folder, 1140, 610), Icono('quit', os.path.join(img_folder, "quit_suite.png"), 1250, 100 )]
+        iconos = [Icono('j1', JUEGOUNO_FOLDER, 240, 610), Icono('j2', JUEGODOS_FOLDER, 540, 610), Icono('j3', JUEGOTRES_FOLDER, 840, 610),
+                  Icono('j4', JUEGOCUATRO_FOLDER, 1140, 610), Icono('quit', os.path.join(IMAGE_FOLDER, "quit_suite.png"), 1250, 85),
+                  Icono('music_on', os.path.join(IMAGE_FOLDER, "sonido_on.png"), 1250, 185),
+                  Icono('help', os.path.join(IMAGE_FOLDER, "ayuda.png"), 1250, 285),
+                  Icono('credits', os.path.join(IMAGE_FOLDER, "creditos.png"), 1250, 385)]
         escenas = []
         while self.running:
             """Loop principal del programa"""
@@ -97,6 +136,7 @@ class MainMenu:
 
             # Update
             self.check_events(iconos)
+            # Eventos de los iconos
             for icono in iconos:
                 icono.update(self.screen)
                 if icono.rect.collidepoint(pygame.mouse.get_pos()):
@@ -116,8 +156,17 @@ class MainMenu:
         self.clean_up()
 
         if self.juego == 'j1':
-            j1 = JuegoUno.JuegoUno()
-            j1.execute()
+            juego = JuegoUno.JuegoUno()
+            juego.execute()
+        elif self.juego == 'j2':
+            juego = JuegoDos.JuegoDos()
+            juego.execute()
+        elif self.juego == 'j3':
+            juego = JuegoTres.JuegoTres()
+            juego.execute()
+        elif self.juego == 'j4':
+            juego = JuegoCuatro.JuegoCuatro()
+            juego.execute()
 
 if __name__ == "__main__":
     mainMenu = MainMenu()
