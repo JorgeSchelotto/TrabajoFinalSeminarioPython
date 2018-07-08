@@ -196,18 +196,18 @@ class JuegoTres:
         jugadores = []
 
         PALABRAS_X_ABAJO = 520
-        PALABRAS_X_ARRIVA = 220
+        PALABRAS_Y_ARRIVA = 220
         PALABRAS_Y = 570
         PALABRAS_X = 520
+        cant = 0
         for nombre, ruta in dic_jugadores.items():
-            cant = 0
-            if cant > 3:
+            if cant < 3:
                 PALABRAS_Y = 220
                 jugadores.append(Palabras(ruta, nombre.replace('.png', ''), PALABRAS_X, PALABRAS_Y))
                 PALABRAS_X = PALABRAS_X + 320
                 cant = cant + 1
-            elif cant < 3:
-                jugadores.append(Palabras(ruta, nombre, PALABRAS_X, PALABRAS_Y))
+            elif cant > 3:
+                jugadores.append(Palabras(ruta, nombre, PALABRAS_X, PALABRAS_Y_ARRIVA))
                 PALABRAS_X = PALABRAS_X + 320
 
 

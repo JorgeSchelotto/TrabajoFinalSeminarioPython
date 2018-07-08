@@ -30,6 +30,7 @@ try:
     import JuegoTres
     import JuegoCuatro
     import os
+    import random
 except ImportError as error:
     print(error, 'Error de importacion en modulo')
 
@@ -110,6 +111,11 @@ class MainMenu:
                         elif icono.name == 'j4':
                             self.juego = 'j4'
                             self.running = False
+                        elif icono.name == 'random':
+                            ran = ['j1', 'j2', 'j3', 'j4']
+                            self.juego = ran[random.randint(0,3)]
+                            self.running = False
+
 
 
 
@@ -122,6 +128,8 @@ class MainMenu:
         self.on_init()
         iconos = [Icono('j1', JUEGOUNO_FOLDER, 240, 610), Icono('j2', JUEGODOS_FOLDER, 540, 610), Icono('j3', JUEGOTRES_FOLDER, 840, 610),
                   Icono('j4', JUEGOCUATRO_FOLDER, 1140, 610), Icono('quit', os.path.join(IMAGE_FOLDER, "quit_suite.png"), 1250, 85),
+                  Icono('j4', JUEGOCUATRO_FOLDER, 1140, 610),
+                  Icono('random', os.path.join(IMAGE_FOLDER, "shuffle.png"),190, 300),
                   Icono('music_on', os.path.join(IMAGE_FOLDER, "sonido_on.png"), 1250, 185),
                   Icono('help', os.path.join(IMAGE_FOLDER, "ayuda.png"), 1250, 285),
                   Icono('credits', os.path.join(IMAGE_FOLDER, "creditos.png"), 1250, 385)]

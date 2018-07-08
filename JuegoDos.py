@@ -99,7 +99,9 @@ class JuegoDos:
                         elif icono.name == 'help':
                             pass
                 for Player in player:
-                    if Player.getRect().collidepoint(event.pos):
+                    if Player.getRect().collidepoint(event.pos) and Player.correct:
+                        # Player.correct verfica que la silaba no este ya hubicada en el lugar correcto.
+                        # Si la silaba esta en el lugar correcto ya no se permite moverla
                         Player.setClick(True)
             elif event.type == MOUSEBUTTONUP:
                 for Player in player:
@@ -183,7 +185,7 @@ class JuegoDos:
         silabas = []
         numeros = random.sample(range(0, len(lista_players)-1), len(lista_players)-1)
         print('numeros', numeros)
-        while len(silabas) <= 16:
+        while len(silabas) < 16:
             print('While')
             for key, value in dic_silabas.items():
                 # Nivel Palabra
@@ -195,11 +197,13 @@ class JuegoDos:
             for num in numeros:
                 print('3 For')
                 # Cargo la lista con silabas al azar
-                if len(silabas) <= 16 and lista_players[num] not in silabas:
-                    silabas.append(lista_players[num])
+                if len(silabas) < 16:
+                    if not(lista_players[num] in silabas):
+                        silabas.append(lista_players[num])
                 else:
                     break
         print('silabas', silabas)
+        print('silabas', len(silabas))
 
         # Desordeno silabas
         random.shuffle(silabas)
@@ -255,14 +259,37 @@ class JuegoDos:
 
 
 
-        # Setea las fichas de los jugadores
+        # Setea las fichas de los jugadores (Silabas)
         dic_jugadores = self.randomPlayers(imagenesNulas)
         jugadores = []
-        PALABRAS_X = 50
         PALABRAS_Y = 570
+        PALABRAS_X = 250
+        PALABRAS_X_ABAJO = 250
+        PALABRAS_Y_ABAJO = 670
+        count = 1
+        print(len(dic_jugadores) ,dic_jugadores)
         for nombre, ruta in dic_jugadores.items():
-            jugadores.append(Silaba(ruta, nombre.replace('.png', ''), PALABRAS_X, PALABRAS_Y, 100, 40))
-            PALABRAS_X = PALABRAS_X + 320
+            if count <= 8:
+                jugadores.append(Silaba(ruta, nombre.replace('.png', ''), PALABRAS_X, PALABRAS_Y, 100, 40))
+                PALABRAS_X = PALABRAS_X + 120
+                count = count + 1
+            elif count > 8:
+                PALABRAS_Y = 670
+                jugadores.append(Silaba(ruta, nombre.replace('.png', ''), PALABRAS_X_ABAJO, PALABRAS_Y_ABAJO, 100, 40))
+                PALABRAS_X_ABAJO = PALABRAS_X_ABAJO + 120
+                count = count + 1
+            elif count > 16:
+                break
+
+            # if count < 8:
+            #     jugadores.append(Silaba(ruta, nombre.replace('.png', ''), PALABRAS_X, PALABRAS_Y, 100, 40))
+            #     PALABRAS_X = PALABRAS_X + 100
+            #     count = count + 1
+            # elif count > 8:
+            #     PALABRAS_Y = 670
+            #     jugadores.append(Silaba(ruta, nombre.replace('.png', ''), PALABRAS_X, PALABRAS_Y, 100, 40))
+            #     PALABRAS_X = PALABRAS_X + 150
+            #     count = count + 1
 
 
 

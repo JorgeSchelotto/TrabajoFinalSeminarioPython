@@ -39,25 +39,28 @@ class Silaba(Palabras.Palabras):
     def __init__(self, ruta, nombre, x, y, HEIGHT, WEIGHT):
         super().__init__(ruta, nombre, x, y)
         self.image = pygame.transform.scale(self.image, (HEIGHT, WEIGHT))
+        self.rect = self.image.get_rect()
+        self.correct = True
+
 
 
     def update(self, surface):
         """Controla los eventos y coliciones de los sprites Palabras"""
         if not self.getClick() and not self.collide:
-            self.rect.center = (self.posX, self.posY)
+            self.rect.center = (super().getPosX(), super().getPosY())
 
         if self.getClick():
             # Si se hace click en la imagen
             self.rect.center = pygame.mouse.get_pos()
 
         if self.collide:
-            pass
             # Si hay colision
             center = self.rect.center
             self.rect = self.image.get_rect()
             self.rect.center = center
+            self.correct = False
 
 
 
 
-        surface.blit(self.getPalabraImagen(), self.getRect())
+        surface.blit(self.getPalabraImagen(), super().getRect())

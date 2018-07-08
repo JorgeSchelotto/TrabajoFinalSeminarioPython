@@ -29,6 +29,11 @@ class Palabras(pygame.sprite.Sprite):
         self.posX = x
         self.posY = y
 
+    def getPosX(self):
+        return self.posX
+
+    def getPosY(self):
+        return self.posY
 
     def getPalabra(self):
         return self.__palabra
