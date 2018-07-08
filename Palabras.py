@@ -66,7 +66,7 @@ class Palabras(pygame.sprite.Sprite):
                 x = x - 1
                 y = y - 1
                 self.image = pygame.transform.scale(self.image, (x, y))
-                self.rect= self.image.get_rect()
+                self.rect = self.image.get_rect()
                 self.rect.center = center
                 self.image = pygame.transform.rotozoom(self.image, -90, 0.8)
             elif x <= 20:

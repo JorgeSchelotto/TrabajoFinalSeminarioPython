@@ -188,7 +188,7 @@ class JuegoCuatro:
                 os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), "Imagenes"),
                              'facil'), palabras).replace('\n', '')
 
-        print(pal2)
+        print('pal2 ' ,pal2)
 
         return pal2
 

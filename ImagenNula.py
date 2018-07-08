@@ -32,9 +32,9 @@ __maintainer__ = 'Burgos, Agustin - Schelotto, Jorge'
 __email__ = ' agburgos83@gmail.com - jasfotografo@hotmail.com'
 __status__ = 'Production'
 
-class Imagen(pygame.sprite.Sprite):
+
+class ImagenNula:
     def __init__(self, nombre, ruta, x, y, H, W):
-        super(Imagen, self).__init__()
         self.__nombre = nombre
         self.image = pygame.image.load(ruta)
         self.image = pygame.transform.scale(self.image, (H, W))
@@ -53,15 +53,3 @@ class Imagen(pygame.sprite.Sprite):
 
     def update(self, surface):
         surface.blit(self.getImagen(), self.getRect())
-
-
-
-
-
-
-
-
-
-
-
-

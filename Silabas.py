@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Implementación del juego numero 2. Al cerrarlo volvera al menu principal"""
+"""Implementación del juego numero 4. Al cerrarlo volvera al menu principal"""
 
 # Copyright 2018 autors: Burgos Agustin, Schelotto Jorge
 #
@@ -21,8 +21,10 @@
 try:
     import pygame
     from pygame.locals import *
+    import Palabras
 except ImportError as error:
     print(error, 'Error de importacion en modulo')
+
 
 __author__ = 'Burgos, Agustin - Schelotto, Jorge'
 __copyright__ = 'Copyright 2018, Burgos Schelotto'
@@ -32,36 +34,30 @@ __maintainer__ = 'Burgos, Agustin - Schelotto, Jorge'
 __email__ = ' agburgos83@gmail.com - jasfotografo@hotmail.com'
 __status__ = 'Production'
 
-class Imagen(pygame.sprite.Sprite):
-    def __init__(self, nombre, ruta, x, y, H, W):
-        super(Imagen, self).__init__()
-        self.__nombre = nombre
-        self.image = pygame.image.load(ruta)
-        self.image = pygame.transform.scale(self.image, (H, W))
-        self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
-        self.mask = pygame.mask.from_surface(self.image)
 
-    def getNombre(self):
-        return self.__nombre
+class Silaba(Palabras.Palabras):
+    def __init__(self, ruta, nombre, x, y, HEIGHT, WEIGHT):
+        super().__init__(ruta, nombre, x, y)
+        self.image = pygame.transform.scale(self.image, (HEIGHT, WEIGHT))
 
-    def getImagen(self):
-        return self.image
-
-    def getRect(self):
-        return self.rect
 
     def update(self, surface):
-        surface.blit(self.getImagen(), self.getRect())
+        """Controla los eventos y coliciones de los sprites Palabras"""
+        if not self.getClick() and not self.collide:
+            self.rect.center = (self.posX, self.posY)
+
+        if self.getClick():
+            # Si se hace click en la imagen
+            self.rect.center = pygame.mouse.get_pos()
+
+        if self.collide:
+            pass
+            # Si hay colision
+            center = self.rect.center
+            self.rect = self.image.get_rect()
+            self.rect.center = center
 
 
 
 
-
-
-
-
-
-
-
-
+        surface.blit(self.getPalabraImagen(), self.getRect())

@@ -27,7 +27,9 @@ try:
     import os
     import random
     import MainMenu
+    from ImagenNula import ImagenNula
     from Palabras import Palabras
+    from Silabas import Silaba
 except ImportError as error:
     print(error, 'Error de importacion en modulo')
 
@@ -44,7 +46,7 @@ __status__ = 'Production'
 # Set Up el arte y sonido (assets)
 GAME_FOLDER = os.path.dirname(__file__)
 FOLDER = os.path.join(GAME_FOLDER, "Imagenes")
-IMAGE_FOLDER = os.path.join(FOLDER, "j4")
+IMAGE_FOLDER = os.path.join(FOLDER, "j2")
 MUSIC_FOLDER = None
 SOUNDS_FOLDER = None
 HEIGHT = 200
@@ -59,7 +61,7 @@ class JuegoDos:
         self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
         self.FPS = 30
-        self.load = pygame.image.load(os.path.join(IMAGE_FOLDER, "fondo-04.png")).convert()
+        self.load = pygame.image.load(os.path.join(IMAGE_FOLDER, "00_fondo-02.png")).convert()
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
 
 
@@ -104,21 +106,48 @@ class JuegoDos:
                     Player.setClick(False)
                     for Enemigo in enemigos:
                         if pygame.sprite.collide_rect(Player, Enemigo):
-                            print('Toque un enemigo!', Enemigo.getNombre())
-                            if Player.getPalabra().upper() == Enemigo.getNombre():
-                                print(Player.getPalabra()[0].upper(), Enemigo.getNombre() )
+                            print('Colicion incorrecta entre {} y {}'.format(Player.getPalabra(), Enemigo.getNombre()))
+                            if Player.getPalabra().upper() == Enemigo.getNombre().upper():
+                                print(Player.getPalabra()[0].upper(), Enemigo.getNombre())
+                                # La lina de abajo hace que la ficha se quede en el centro de la caja para silabas
                                 Player.rect.center = Enemigo.rect.center
                                 print('Palabra {} toco a Imagen {}. Suma 10!'.format(Player.getPalabra(), Enemigo.getNombre()))
                                 Player.collide = True
 
 
+    def ImagenesNulasRandom(self):
+        """Genera una lista de dos imagenes que serviran de muestras para armar las dos palabras con las silabas."""
+        imagenesNulas_folder = os.path.join(os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j2"), "imagenes"), "faciles")
+        lista_imagenesNulas = os.listdir(imagenesNulas_folder)
+        # Mezclo la lista de imagenes
+        random.shuffle(lista_imagenesNulas)
+
+
+        # Creo diccionarios segun la dificultad de juego
+        faciles = {'abanico':['a', 'ba', 'ni', 'co'], 'auto': ['au', 'to'], 'banana': ['ba','na','na'], 'elefante': ['e', 'le', 'fan', 'te'],
+                   'gato': ['ga', 'to'], 'goma': ['go', 'ma'], 'luna': ['lu', 'na'], 'mesa': ['me', 'sa'], 'moto': ['mo', 'to'],
+                   'oro': ['o', 'ro'],'oso': ['o', 'so'], 'oveja': ['o', 've', 'ja'], 'paleta': ['pa', 'le', 'ta'], 'pelota': ['pe', 'lo', 'ta'],
+                   'pato': ['pa', 'to'], 'sopa': ['so', 'pa'], 'uvas': ['u', 'vas'], 'vaca': ['va', 'ca'], 'gota': ['go', 'ta']}
+
+        # cargo en forma aleatoria un diccionario con dos palabras y sus correspondiente división en silabas
+        dict_img = {}
+        num = 0
+        for num in range(2):
+            img = lista_imagenesNulas[num]
+            dict_img[img] = [faciles[img.replace('.png', '')], os.path.join(imagenesNulas_folder, img)]
+
+        print('Imagenes Nulas ', dict_img)
+
+        return dict_img
+
+
+
+
+
     def randomEnemigos(self):
         """Genera un diccionario aleatorio y sin repeticiones con los nombres y las direcciones de los archivos de letras"""
-        game_folder = os.path.dirname(__file__)
-        enemies_folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "imagenes"), "faciles"), "palabras")
+        enemies_folder = os.path.join(os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j2"), "silabas"), "faciles")
         lista_enemigos = os.listdir(enemies_folder)
-
-        letra = ['A', 'E', 'I', 'O', 'U']
 
 
         con=[]
@@ -142,54 +171,50 @@ class JuegoDos:
 
         return pal2
 
-    def randomPlayers(self, dic_letras):
-        """Genera un diccionario aleatorio y sin repeticiones con los nombres y las direcciones de los archivos de imagenes"""
-        game_folder = os.path.dirname(__file__)
-        folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "Imagenes"), 'faciles'), 'imagenes')
-        players_folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "imagenes"), "faciles"), "palabras")
+    def randomPlayers(self, dic_silabas):
+
+        """Genera un diccionario aleatorio y sin repeticiones con las silabas y las direcciones de los archivos de imagenes"""
+        players_folder = os.path.join(os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j2"), "silabas"), "faciles")
         lista_players = os.listdir(players_folder)
 
+        print('Begin randomPlayers()')
 
 
-        # Creo una lista de numeros aleatorios.
-        con = []
-        while len(con) < 4:
-            valor = random.randrange(len(lista_players)-1)
-            if valor not in con:
-                con.append(valor)
-        print(con)
+        silabas = []
+        numeros = random.sample(range(0, len(lista_players)-1), len(lista_players)-1)
+        print('numeros', numeros)
+        while len(silabas) <= 16:
+            print('While')
+            for key, value in dic_silabas.items():
+                # Nivel Palabra
+                print('1 For')
+                for silaba in value[0]:
+                    print('2 For')
+                    # Nivel silaba
+                    silabas.append(silaba.upper() + '.png')
+            for num in numeros:
+                print('3 For')
+                # Cargo la lista con silabas al azar
+                if len(silabas) <= 16 and lista_players[num] not in silabas:
+                    silabas.append(lista_players[num])
+                else:
+                    break
+        print('silabas', silabas)
 
-        lista = []
-        num = 0
-        print('Tamaño del archivo: ', len(lista_players))
-        print(dic_letras)
-        letras =[]
-        while len(lista) < 4:
-            if lista_players[num].upper() in dic_letras:
-                print(lista_players[num].upper())
-                # si esta en el diccionario de palabras
-                lista.append(lista_players[num])
-                letras.append(lista_players[num][0].upper())
-            num = num +1
+        # Desordeno silabas
+        random.shuffle(silabas)
+        print('silabas caos', silabas)
 
-            print('no se cumple condicion')
-            print(lista_players[num].upper())
-            print(dic_letras)
-            print(lista)
-            #buscar mas con I y con O
-        for palabra in lista_players:
-            if lista[random.randrange(2)][0] == palabra[0] and lista[random.randrange(2)] != palabra:
-                lista.append(palabra)
-                break
-        print(lista)
 
+        # Cargo el diccionario final que retornara el metodo
         pal2 = {}
-        for palabras in lista:
+        for palabras in silabas:
             pal2[palabras.replace('\n', '')] = os.path.join(
-                os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), "Imagenes"),
-                             'facil'), palabras).replace('\n', '')
+                os.path.join(os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j2"), "silabas"),
+                             'faciles'), palabras).replace('\n', '')
 
         print(pal2)
+        print('End randomPlayers()')
 
         return pal2
 
@@ -199,25 +224,44 @@ class JuegoDos:
         """Loop del juego"""
 
         self.on_init()
-        iconos = [Icono('quit', os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J4.png"), 1300, 50),
-                  Icono('music_on', os.path.join(IMAGE_FOLDER, "musica_ON_J4.png"), 1300, 135),
-                  Icono('help', os.path.join(IMAGE_FOLDER, "ayuda_J4.png"), 1300, 220)]
 
+        # Setea los iconos
+        iconos = [Icono('quit', os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J2.png"), 1300, 50),
+                  Icono('music_on', os.path.join(IMAGE_FOLDER, "musica_ON_J2.png"), 1300, 135),
+                  Icono('help', os.path.join(IMAGE_FOLDER, "ayuda_J2.png"), 1300, 220)]
+
+        # Setea imagenes estaticas que sirven como muestra
+        imagenesNulas = self.ImagenesNulasRandom()
+        img_x = 350
+        img_y = 250
+        img = []
+        for key, value in imagenesNulas.items():
+            img.append(ImagenNula(key, value[1], img_x, img_y, 175, 175))
+            img_x = img_x + 700
+
+        # Setea las cajas a llenar con silabas
+        nulo_folder = os.path.join(os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j2"), "imagenes"), "nulo.png")
         dic_letras = self.randomEnemigos()
         letras_x = 160
-        letras_y= 320
+        letras_y= 400
         letras = []
-        for key, value in dic_letras.items():
-            letras.append(Imagen(key, value, letras_x, letras_y, HEIGHT, WEIGHT))
-            letras_x = letras_x + 345
+        for key, value in imagenesNulas.items():
+            for silaba in value[0]:
+                # Si len(silaba) = 2, medida x, si es 3 medida y y si es 4 medida z (implementar para que este balanceado)
+                # esta medida esta bien si len() == 4
+                letras.append(Imagen(silaba.replace('.png', ''), nulo_folder, letras_x, letras_y, 100, 50))
+                letras_x = letras_x + 150
+            letras_x = 800
 
-        dic_jugadores = self.randomPlayers(dic_letras).copy()
+
+
+        # Setea las fichas de los jugadores
+        dic_jugadores = self.randomPlayers(imagenesNulas)
         jugadores = []
-
-        PALABRAS_X = 200
+        PALABRAS_X = 50
         PALABRAS_Y = 570
         for nombre, ruta in dic_jugadores.items():
-            jugadores.append(Palabras(ruta, nombre, PALABRAS_X, PALABRAS_Y))
+            jugadores.append(Silaba(ruta, nombre.replace('.png', ''), PALABRAS_X, PALABRAS_Y, 100, 40))
             PALABRAS_X = PALABRAS_X + 320
 
 
@@ -232,12 +276,16 @@ class JuegoDos:
 
             # Update
             self.check_events(iconos, jugadores, letras)
+
             for icono in iconos:
                 icono.update(self.screen)
                 if icono.rect.collidepoint(pygame.mouse.get_pos()):
                     icono.hover = True
                 else:
                     icono.hover = False
+
+            for imagen in img:
+                imagen.update(self.screen)
 
             for enemy in letras:
                 enemy.update(self.screen)
