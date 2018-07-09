@@ -50,6 +50,25 @@ class Palabras(pygame.sprite.Sprite):
     def getRect(self):
         return self.rect
 
+    def colli(self, x, y):
+
+        if x > 20:
+            # Achica la imagen
+            center = self.rect.center
+            x = x - 1
+            y = y - 1
+            self.image = pygame.transform.scale(self.image, (x, y))
+            self.rect = self.image.get_rect()
+            self.rect.center = center
+            self.image = pygame.transform.rotozoom(self.image, -90, 0.8)
+        elif x <= 20:
+            # Para que no de x < 0
+            center = self.rect.center
+            self.image = pygame.transform.scale(self.image, (0, 0))
+            self.rect = self.image.get_rect()
+            self.rect.center = center
+            self.image = pygame.transform.rotozoom(self.image, -90, 0.5)
+
 
     def update(self,surface):
         """Controla los eventos y coliciones de los sprites Palabras"""
@@ -64,23 +83,11 @@ class Palabras(pygame.sprite.Sprite):
             # Si hay colision
             x = self.image.get_rect().size[0]
             y = self.image.get_rect().size[1]
-
-            if x > 20:
-                # Achica la imagen
-                center = self.rect.center
-                x = x - 1
-                y = y - 1
-                self.image = pygame.transform.scale(self.image, (x, y))
-                self.rect = self.image.get_rect()
-                self.rect.center = center
-                self.image = pygame.transform.rotozoom(self.image, -90, 0.8)
-            elif x <= 20:
-                # Para que no de x < 0
-                center = self.rect.center
-                self.image = pygame.transform.scale(self.image, (0, 0))
-                self.rect = self.image.get_rect()
-                self.rect.center = center
-                self.image = pygame.transform.rotozoom(self.image, -90, 0.5)
+            self.colli(x,y)
+            # Saca la imagen de la zona de colición.
+            if self.image.get_rect().size[0] <= 20:
+                self.rect.center = (0,0)
 
         surface.blit(self.getPalabraImagen(), self.getRect())
+
 

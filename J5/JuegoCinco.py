@@ -10,12 +10,17 @@ try:
     import pygame as pg
     from pygame.locals import *
     import random
+    import os
+    import sys
+
     from J5.settings import *
     from J5.sprites import *
-    from os import path
 
+    sys.path.append('./grupo5')
+    import MainMenu
 except ImportError as error:
-    print(error, 'Error de importacion en modulo')
+    print(error, 'Juego 5 Error de importacion en modulo')
+
 
 class Game:
     def __init__(self):
@@ -31,23 +36,23 @@ class Game:
 
     def load_data(self):
         # load high score
-        self.dir = path.dirname(__file__)
-        with open(path.join(self.dir, HS_FILE), 'r') as f:
+        self.dir = os.path.dirname(__file__)
+        with open(os.path.join(self.dir, HS_FILE), 'r') as f:
             try:
                 self.highscore = int(f.read())
             except:
                 self.highscore = 0
         # load spritesheet image
-        img_dir = path.join(self.dir, 'img')
-        self.spritesheet = Spritesheet(path.join(img_dir, SPRITESHEET))
+        img_dir = os.path.join(self.dir, 'img')
+        self.spritesheet = Spritesheet(os.path.join(img_dir, SPRITESHEET))
         # cloud images
         self.cloud_images = []
         for i in range(1, 4):
-            self.cloud_images.append(pg.image.load(path.join(img_dir, 'cloud{}.png'.format(i))).convert())
+            self.cloud_images.append(pg.image.load(os.path.join(img_dir, 'cloud{}.png'.format(i))).convert())
         # load sounds
-        self.snd_dir = path.join(self.dir, 'snd')
-        self.jump_sound = pg.mixer.Sound(path.join(self.snd_dir, 'Jump33.wav'))
-        self.boost_sound = pg.mixer.Sound(path.join(self.snd_dir, 'Boost16.wav'))
+        self.snd_dir = os.path.join(self.dir, 'snd')
+        self.jump_sound = pg.mixer.Sound(os.path.join(self.snd_dir, 'Jump33.wav'))
+        self.boost_sound = pg.mixer.Sound(os.path.join(self.snd_dir, 'Boost16.wav'))
 
     def new(self):
         # start a new game
@@ -61,7 +66,7 @@ class Game:
         for plat in PLATFORM_LIST:
             Platform(self, *plat)
         self.mob_timer = 0
-        pg.mixer.music.load(path.join(self.snd_dir, 'Happy Tune.ogg'))
+        pg.mixer.music.load(os.path.join(self.snd_dir, 'Happy Tune.ogg'))
         for i in range(8):
             c = Cloud(self)
             c.rect.y += 500
@@ -91,6 +96,7 @@ class Game:
         mob_hits = pg.sprite.spritecollide(self.player, self.mobs, False, pg.sprite.collide_mask)
         if mob_hits:
             self.playing = False
+            self.running = False
 
         # check if player hits a platform - only if falling
         if self.player.vel.y > 0:
@@ -138,6 +144,7 @@ class Game:
                     sprite.kill()
         if len(self.platforms) == 0:
             self.playing = False
+            self.running = False
 
         # spawn new platforms to keep same average number
         while len(self.platforms) < 6:
@@ -170,13 +177,14 @@ class Game:
 
     def show_start_screen(self):
         # game splash/start screen
-        pg.mixer.music.load(path.join(self.snd_dir, 'Yippee.ogg'))
+        pg.mixer.music.load(os.path.join(self.snd_dir, 'Yippee.ogg'))
         pg.mixer.music.play(loops=-1)
         self.screen.fill(BGCOLOR)
         self.draw_text(TITLE, 48, WHITE, WIDTH / 2, HEIGHT / 4)
-        self.draw_text("Arrows to move, Space to jump", 22, WHITE, WIDTH / 2, HEIGHT / 2)
-        self.draw_text("Press a key to play", 22, WHITE, WIDTH / 2, HEIGHT * 3 / 4)
-        self.draw_text("High Score: " + str(self.highscore), 22, WHITE, WIDTH / 2, 15)
+        self.draw_text("APRETA LAS FLECHAS PARA MOVERTE ", 22, WHITE, WIDTH / 2, HEIGHT / 2)
+        self.draw_text("APRETA SPACE PARA SALTAR ", 22, WHITE, WIDTH / 2, HEIGHT / 1.8)
+        self.draw_text("APRETA UNA TECLA PARA EMPREZAR", 22, WHITE, WIDTH / 2, HEIGHT * 3 / 4)
+        self.draw_text("PUNTAJE MAS ALTO: " + str(self.highscore), 22, WHITE, WIDTH / 2, 15)
         pg.display.flip()
         self.wait_for_key()
         pg.mixer.music.fadeout(500)
@@ -185,7 +193,7 @@ class Game:
         # game over/continue
         if not self.running:
             return
-        pg.mixer.music.load(path.join(self.snd_dir, 'Yippee.ogg'))
+        pg.mixer.music.load(os.path.join(self.snd_dir, 'Yippee.ogg'))
         pg.mixer.music.play(loops=-1)
         self.screen.fill(BGCOLOR)
         self.draw_text("GAME OVER", 48, WHITE, WIDTH / 2, HEIGHT / 4)
@@ -194,7 +202,7 @@ class Game:
         if self.score > self.highscore:
             self.highscore = self.score
             self.draw_text("NEW HIGH SCORE!", 22, WHITE, WIDTH / 2, HEIGHT / 2 + 40)
-            with open(path.join(self.dir, HS_FILE), 'w') as f:
+            with open(os.path.join(self.dir, HS_FILE), 'w') as f:
                 f.write(str(self.score))
         else:
             self.draw_text("High Score: " + str(self.highscore), 22, WHITE, WIDTH / 2, HEIGHT / 2 + 40)
@@ -220,10 +228,22 @@ class Game:
         text_rect.midtop = (x, y)
         self.screen.blit(text_surface, text_rect)
 
-g = Game()
-g.show_start_screen()
-while g.running:
-    g.new()
-    g.show_go_screen()
+    def execute(self):
+        while self.running:
+            self.show_start_screen()
+            self.new()
+            self.show_go_screen()
+        pg.quit()
+        main = MainMenu.MainMenu()
+        main.execute()
 
-pg.quit()
+
+
+
+
+if __name__ == '__main__':
+    g = Game()
+    g.execute()
+
+
+

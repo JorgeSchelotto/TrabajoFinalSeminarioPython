@@ -28,6 +28,8 @@ try:
     import random
     from Palabras import Palabras
     import MainMenu
+    from J5 import *
+    import Premio
 except ImportError as error:
     print(error, 'Error de importacion en modulo')
 
@@ -63,6 +65,8 @@ class JuegoTres:
         self.FPS = 30
         self.load = pygame.image.load(os.path.join(IMG_FOLDER, "fondo-03.png")).convert()
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
+        self.hits = 0
+        self.crash = False
 
 
 
@@ -111,6 +115,10 @@ class JuegoTres:
                             Player.rect.center = Enemigo.rect.center
                             print('Palabra {} toco a Imagen {}. Suma 10!'.format(Player.getPalabra(), Enemigo.getNombre()))
                             Player.collide = True
+                            self.crash = True
+                if self.crash:
+                    self.hits = self.hits + 1
+                    self.crash = False
 
 
     def randomEnemigos(self):
@@ -166,12 +174,25 @@ class JuegoTres:
 
         return pal2
 
+    def win(self, image):
+        """Imprime una patalla de felicitaciones si se gano la partida."""
+        bool = False
+        if self.hits == 1:
+            bool = True
+            for clock in range(390):
+                image.update(self.screen)
+                pygame.display.update()
+        return bool
+
 
 
     def execute(self):
         """Loop del juego"""
 
         self.on_init()
+
+        # Setea pantalla de ganador
+        image = Premio.Cartel_Premio(700, 300)
 
         # Cargo iconos
         iconos = [Icono('quit', os.path.join(IMG_FOLDER, "cerrar_ayuda_J3.png"), 1300, 50),
@@ -244,6 +265,8 @@ class JuegoTres:
 
 
             # Draw / Render
+            if self.win(image):
+                break
 
 
 
@@ -251,8 +274,12 @@ class JuegoTres:
             pygame.display.update()
 
         self.clean_up()
-        mainMenu = MainMenu.MainMenu()
-        mainMenu.execute()
+        if self.hits >= 1 :
+            j5 = JuegoCinco.Game()
+            j5.execute()
+        else:
+            mainMenu = MainMenu.MainMenu()
+            mainMenu.execute()
 
 if __name__ == "__main__":
     game = JuegoTres()

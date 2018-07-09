@@ -59,8 +59,8 @@ class Silaba(Palabras.Palabras):
             self.rect = self.image.get_rect()
             self.rect.center = center
             self.correct = False
-
-
-
+            self.image = pygame.transform.scale(self.image, (0, 0))
+            if self.image.get_rect().size[0] == 0:
+                self.rect.center = (0,0)
 
         surface.blit(self.getPalabraImagen(), super().getRect())

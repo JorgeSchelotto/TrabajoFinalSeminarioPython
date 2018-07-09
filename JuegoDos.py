@@ -30,6 +30,8 @@ try:
     from ImagenNula import ImagenNula
     from Palabras import Palabras
     from Silabas import Silaba
+    from J5.JuegoCinco import Game
+    import Premio
 except ImportError as error:
     print(error, 'Error de importacion en modulo')
 
@@ -63,6 +65,11 @@ class JuegoDos:
         self.FPS = 30
         self.load = pygame.image.load(os.path.join(IMAGE_FOLDER, "00_fondo-02.png")).convert()
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
+        self.goal = 0
+        self.hits = 0
+        self.crash = False
+        self.phantom = []
+        self.masc = False
 
 
 
@@ -79,7 +86,7 @@ class JuegoDos:
         pygame.quit()
         print("Quit!")
 
-    def check_events(self, iconos, player, enemigos):
+    def check_events(self, iconos, player, enemigos, mascara, phantons):
         """Verifico los eventos dentro del loop"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -108,13 +115,21 @@ class JuegoDos:
                     Player.setClick(False)
                     for Enemigo in enemigos:
                         if pygame.sprite.collide_rect(Player, Enemigo):
-                            print('Colicion incorrecta entre {} y {}'.format(Player.getPalabra(), Enemigo.getNombre()))
                             if Player.getPalabra().upper() == Enemigo.getNombre().upper():
-                                print(Player.getPalabra()[0].upper(), Enemigo.getNombre())
-                                # La lina de abajo hace que la ficha se quede en el centro de la caja para silabas
-                                Player.rect.center = Enemigo.rect.center
-                                print('Palabra {} toco a Imagen {}. Suma 10!'.format(Player.getPalabra(), Enemigo.getNombre()))
                                 Player.collide = True
+                                if Enemigo.getNombre() not in self.phantom:
+                                    self.phantom.append(Enemigo.getNombre())
+                                    for Enemigo in enemigos:
+                                        if Enemigo.getNombre().lower() in self.phantom:
+                                            mascara.append(
+                                                ImagenNula(Enemigo.getNombre(),
+                                                           os.path.join(phantons, Enemigo.getNombre() + '.png'),
+                                                           Enemigo.rect.center[0], Enemigo.rect.center[1], 100, 50))
+                                self.crash = True
+                                self.masc = True
+                                if self.crash:
+                                    self.hits = self.hits + 1
+                                    self.crash = False
 
 
     def ImagenesNulasRandom(self):
@@ -138,7 +153,6 @@ class JuegoDos:
             img = lista_imagenesNulas[num]
             dict_img[img] = [faciles[img.replace('.png', '')], os.path.join(imagenesNulas_folder, img)]
 
-        print('Imagenes Nulas ', dict_img)
 
         return dict_img
 
@@ -155,7 +169,6 @@ class JuegoDos:
         con=[]
         while len(con) != 4:
             valor = random.randrange(len(lista_enemigos)-1)
-            print(valor)
             if valor not in con:
                 con.append(valor)
 
@@ -169,7 +182,7 @@ class JuegoDos:
         for palabras in lista:
             pal2[palabras.replace('\n', '').upper()] = os.path.join(enemies_folder, palabras)
 
-        print(pal2)
+
 
         return pal2
 
@@ -189,21 +202,17 @@ class JuegoDos:
             print('While')
             for key, value in dic_silabas.items():
                 # Nivel Palabra
-                print('1 For')
                 for silaba in value[0]:
-                    print('2 For')
                     # Nivel silaba
                     silabas.append(silaba.upper() + '.png')
             for num in numeros:
-                print('3 For')
+
                 # Cargo la lista con silabas al azar
                 if len(silabas) < 16:
                     if not(lista_players[num] in silabas):
                         silabas.append(lista_players[num])
                 else:
                     break
-        print('silabas', silabas)
-        print('silabas', len(silabas))
 
         # Desordeno silabas
         random.shuffle(silabas)
@@ -222,12 +231,23 @@ class JuegoDos:
 
         return pal2
 
-
+    def win(self, image):
+        """Imprime una patalla de felicitaciones si se gano la partida."""
+        bool = False
+        if self.goal != 0 and self.hits == self.goal:
+            bool = True
+            for clock in range(390):
+                image.update(self.screen)
+                pygame.display.update()
+        return bool
 
     def execute(self):
         """Loop del juego"""
 
         self.on_init()
+
+        # Seteo imagen que se mostrará al ganar
+        image = Premio.Cartel_Premio(700, 300)
 
         # Setea los iconos
         iconos = [Icono('quit', os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J2.png"), 1300, 50),
@@ -243,9 +263,9 @@ class JuegoDos:
             img.append(ImagenNula(key, value[1], img_x, img_y, 175, 175))
             img_x = img_x + 700
 
+
         # Setea las cajas a llenar con silabas
         nulo_folder = os.path.join(os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j2"), "imagenes"), "nulo.png")
-        dic_letras = self.randomEnemigos()
         letras_x = 160
         letras_y= 400
         letras = []
@@ -255,6 +275,8 @@ class JuegoDos:
                 # esta medida esta bien si len() == 4
                 letras.append(Imagen(silaba.replace('.png', ''), nulo_folder, letras_x, letras_y, 100, 50))
                 letras_x = letras_x + 150
+                # Establesco la meta segun la cantidad de silbas cargadas
+            self.goal = self.goal + len(value[0])
             letras_x = 800
 
 
@@ -267,7 +289,6 @@ class JuegoDos:
         PALABRAS_X_ABAJO = 250
         PALABRAS_Y_ABAJO = 670
         count = 1
-        print(len(dic_jugadores) ,dic_jugadores)
         for nombre, ruta in dic_jugadores.items():
             if count <= 8:
                 jugadores.append(Silaba(ruta, nombre.replace('.png', ''), PALABRAS_X, PALABRAS_Y, 100, 40))
@@ -281,28 +302,22 @@ class JuegoDos:
             elif count > 16:
                 break
 
-            # if count < 8:
-            #     jugadores.append(Silaba(ruta, nombre.replace('.png', ''), PALABRAS_X, PALABRAS_Y, 100, 40))
-            #     PALABRAS_X = PALABRAS_X + 100
-            #     count = count + 1
-            # elif count > 8:
-            #     PALABRAS_Y = 670
-            #     jugadores.append(Silaba(ruta, nombre.replace('.png', ''), PALABRAS_X, PALABRAS_Y, 100, 40))
-            #     PALABRAS_X = PALABRAS_X + 150
-            #     count = count + 1
+        mascara = []
 
-
+        phantons = os.path.join(os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j2"), "silabas"), "faciles")
 
         while self.running:
-
 
             """Loop principal del programa"""
             self.clock.tick(self.FPS)
             self.screen.blit(self.image, (0, 0))
 
 
+
+
             # Update
-            self.check_events(iconos, jugadores, letras)
+            self.check_events(iconos, jugadores, letras, mascara, phantons)
+
 
             for icono in iconos:
                 icono.update(self.screen)
@@ -311,18 +326,28 @@ class JuegoDos:
                 else:
                     icono.hover = False
 
+
             for imagen in img:
                 imagen.update(self.screen)
 
+
+
+
             for enemy in letras:
                 enemy.update(self.screen)
+
+            for masc in mascara:
+                masc.update(self.screen)
 
             for jugador in jugadores:
                 jugador.update(self.screen)
 
 
 
+
             # Draw / Render
+            if self.win(image):
+                break
 
 
 
@@ -330,8 +355,12 @@ class JuegoDos:
             pygame.display.update()
 
         self.clean_up()
-        mainMenu = MainMenu.MainMenu()
-        mainMenu.execute()
+        if self.goal != 0 and self.hits == self.goal :
+            j5 = Game()
+            j5.execute()
+        else:
+            mainMenu = MainMenu.MainMenu()
+            mainMenu.execute()
 
 if __name__ == "__main__":
     game = JuegoDos()

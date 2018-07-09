@@ -27,6 +27,8 @@ try:
     import random
     from Palabras import Palabras
     import MainMenu
+    import Premio
+    from J5.JuegoCinco import Game
 except ImportError as error:
     print(error, 'Error de importacion en modulo')
 
@@ -65,6 +67,9 @@ class JuegoUno:
         self.FPS = 30
         self.load = pygame.image.load(os.path.join(IMAGE_FOLDER, "00_fondo-01.png")).convert()
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
+        self.hits = 0
+        self.crash = True
+        self.finish = False
 
 
 
@@ -105,7 +110,6 @@ class JuegoUno:
                         #print('Click palabra')
                         Player.setClick(True)
             elif event.type == MOUSEBUTTONUP:
-                fin = 3
                 for Player in player:
                     Player.setClick(False)
                     for Enemigo in enemigos:
@@ -115,7 +119,13 @@ class JuegoUno:
                                 print(Player.getPalabra()[0].upper(), Enemigo.getNombre() )
                                 Player.rect.center = Enemigo.rect.center
                                 print('Palabra {} toco a Imagen {}. Suma 10!'.format(Player.getPalabra(), Enemigo.getNombre()))
+                                Player.remove()
                                 Player.collide = True
+                                self.crash = False
+                                if not self.crash:
+                                    self.hits = self.hits + 1
+                                    self.crash = True
+
 
 
     def randomEnemigos(self):
@@ -205,7 +215,15 @@ class JuegoUno:
 
         return pal2
 
-
+    def win(self, image):
+        """Imprime una patalla de felicitaciones si se gano la partida."""
+        bool = False
+        if self.hits >= 3:
+            bool = True
+            for clock in range(390):
+                image.update(self.screen)
+                pygame.display.update()
+        return bool
 
     def execute(self):
         """Loop del juego"""
@@ -234,6 +252,11 @@ class JuegoUno:
             PALABRAS_X = PALABRAS_X + 320
 
 
+
+        # Seteo imagen que se mostrará al ganar
+        image = Premio.Cartel_Premio(700, 300)
+
+
         while self.running:
             """Loop principal del programa"""
             self.clock.tick(self.FPS)
@@ -256,9 +279,14 @@ class JuegoUno:
             for jugador in jugadores:
                 jugador.update(self.screen)
 
+            if self.hits == 3:
+                self.finish = True
+
 
             # Draw / Render
 
+            if self.win(image):
+                break
 
 
             # update la pantalla
@@ -266,10 +294,16 @@ class JuegoUno:
 
 
 
-        self.clean_up()
 
-        mainMenu = MainMenu.MainMenu()
-        mainMenu.execute()
+        self.clean_up()
+        print(self.hits)
+
+        if self.hits >= 3 :
+            j5 = Game()
+            j5.execute()
+        else:
+            mainMenu = MainMenu.MainMenu()
+            mainMenu.execute()
 
 if __name__ == "__main__":
     game = JuegoUno()

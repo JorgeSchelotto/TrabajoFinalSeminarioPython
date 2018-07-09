@@ -40,7 +40,6 @@ class ImagenNula:
         self.image = pygame.transform.scale(self.image, (H, W))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
-        self.mask = pygame.mask.from_surface(self.image)
 
     def getNombre(self):
         return self.__nombre

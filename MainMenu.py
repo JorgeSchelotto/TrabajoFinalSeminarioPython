@@ -31,6 +31,7 @@ try:
     import JuegoCuatro
     import os
     import random
+    import Premio
 except ImportError as error:
     print(error, 'Error de importacion en modulo')
 
@@ -133,11 +134,14 @@ class MainMenu:
                   Icono('music_on', os.path.join(IMAGE_FOLDER, "sonido_on.png"), 1250, 185),
                   Icono('help', os.path.join(IMAGE_FOLDER, "ayuda.png"), 1250, 285),
                   Icono('credits', os.path.join(IMAGE_FOLDER, "creditos.png"), 1250, 385)]
-        escenas = []
+
+
         while self.running:
             """Loop principal del programa"""
             self.clock.tick(self.FPS)
             self.screen.blit(self.image, (0, 0))
+
+
 
 
 
@@ -151,6 +155,7 @@ class MainMenu:
                     icono.hover = True
                 else:
                     icono.hover = False
+
 
 
 

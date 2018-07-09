@@ -27,6 +27,8 @@ try:
     import random
     import MainMenu
     from Palabras import Palabras
+    from J5.JuegoCinco import Game
+    import Premio
 except ImportError as error:
     print(error, 'Error de importacion en modulo')
 
@@ -60,6 +62,8 @@ class JuegoCuatro:
         self.FPS = 30
         self.load = pygame.image.load(os.path.join(IMAGE_FOLDER, "fondo-04.png")).convert()
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
+        self.hits = 0
+        self.crash = False
 
 
 
@@ -109,6 +113,10 @@ class JuegoCuatro:
                                 Player.rect.center = Enemigo.rect.center
                                 print('Palabra {} toco a Imagen {}. Suma 10!'.format(Player.getPalabra(), Enemigo.getNombre()))
                                 Player.collide = True
+                                self.crash = True
+                    if self.crash:
+                        self.hits = self.hits + 1
+                        self.crash = False
 
 
     def randomEnemigos(self):
@@ -192,16 +200,33 @@ class JuegoCuatro:
 
         return pal2
 
+    def win(self, image):
+        """Imprime una patalla de felicitaciones si se gano la partida."""
+        bool = False
+        if self.hits == 4:
+            bool = True
+            for clock in range(390):
+                image.update(self.screen)
+                pygame.display.update()
+        return bool
+
 
 
     def execute(self):
         """Loop del juego"""
 
         self.on_init()
+
+        # Setea pantalla de ganador
+        image = Premio.Cartel_Premio(700, 300)
+
+        # Setea iconos
         iconos = [Icono('quit', os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J4.png"), 1300, 50),
                   Icono('music_on', os.path.join(IMAGE_FOLDER, "musica_ON_J4.png"), 1300, 135),
                   Icono('help', os.path.join(IMAGE_FOLDER, "ayuda_J4.png"), 1300, 220)]
 
+
+        # Setea enemigos
         dic_letras = self.randomEnemigos()
         letras_x = 160
         letras_y= 320
@@ -210,9 +235,9 @@ class JuegoCuatro:
             letras.append(Imagen(key, value, letras_x, letras_y, HEIGHT, WEIGHT))
             letras_x = letras_x + 345
 
+        # Setea las fichas del jugador
         dic_jugadores = self.randomPlayers(dic_letras).copy()
         jugadores = []
-
         PALABRAS_X = 200
         PALABRAS_Y = 570
         for nombre, ruta in dic_jugadores.items():
@@ -247,6 +272,8 @@ class JuegoCuatro:
 
 
             # Draw / Render
+            if self.win(image):
+                break
 
 
 
@@ -254,8 +281,13 @@ class JuegoCuatro:
             pygame.display.update()
 
         self.clean_up()
-        mainMenu = MainMenu.MainMenu()
-        mainMenu.execute()
+        print(self.hits)
+        if self.hits == 4 :
+            j5 = Game()
+            j5.execute()
+        else:
+            mainMenu = MainMenu.MainMenu()
+            mainMenu.execute()
 
 if __name__ == "__main__":
     game = JuegoCuatro()
