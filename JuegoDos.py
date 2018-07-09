@@ -119,7 +119,6 @@ class JuegoDos:
                             self.running = False
                         elif icono.name == 'music':
                             self.music = not self.music
-                            print(icono.name)
                             if self.music:
                                 pygame.mixer.music.unpause()
                                 icono.image = pygame.transform.scale(
@@ -154,7 +153,7 @@ class JuegoDos:
                                         if Enemigo.getNombre().lower() in self.phantom:
                                             mascara.append(
                                                 ImagenNula(Enemigo.getNombre(),
-                                                           os.path.join(phantons, Enemigo.getNombre() + '.png'),
+                                                           os.path.join(phantons, Enemigo.getNombre().upper() + '.png'),
                                                            Enemigo.rect.center[0], Enemigo.rect.center[1], 100, 50))
                                 self.crash = True
                                 self.masc = True

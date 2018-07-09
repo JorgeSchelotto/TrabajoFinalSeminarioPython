@@ -26,7 +26,7 @@ class Icono(pygame.sprite.Sprite):
     def __init__(self, name, ruta, x, y):
         super(Icono, self).__init__()
         self.name = name
-        self.image = pygame.image.load(ruta)#.convert()
+        self.image = pygame.image.load(ruta)
         self.image = pygame.transform.scale(self.image,(int(self.image.get_size()[0] / 2), int(self.image.get_size()[1] / 2)))
         #self.image.set_colorkey((0, 0, 0), RLEACCEL)
         self.rect = self.image.get_rect()
