@@ -12,9 +12,10 @@ try:
     import random
     import os
     import sys
-
+    from datetime import datetime
     from J5.settings import *
     from J5.sprites import *
+    import time
 
     sys.path.append('./grupo5')
     import MainMenu
@@ -235,6 +236,16 @@ class Game:
             self.show_start_screen()
             self.new()
             self.show_go_screen()
+        try:
+            file_status_array = os.stat(__file__)
+            with open(os.path.join(self.dir, 'Puntajes.txt'), 'a') as f:
+                f.writelines('Fecha: {} Juego: Jummpy Puntos: {}\n'.format(str(time.ctime(file_status_array[7])), str(self.score)))
+        except OSError as e:
+            print(e)
+            f = open(os.path.join(self.dir, 'Puntajes.txt'), 'w')
+            f.close()
+            print('Se creo el archivo Puntajes.txt')
+
         pg.quit()
         main = MainMenu.MainMenu()
         main.execute()

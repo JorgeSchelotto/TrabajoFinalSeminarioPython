@@ -32,6 +32,7 @@ try:
     import os
     import random
     import Premio
+    import pantalla_puntos_clases
 except ImportError as error:
     print(error, 'Error de importacion en modulo')
 
@@ -108,7 +109,8 @@ class MainMenu:
                                 icono.image = pygame.transform.scale(
                                     pygame.image.load(os.path.join(IMAGE_FOLDER, "sonido_off.png")), (73, 73))
                         elif icono.name == 'credits':
-                            pass
+                            self.juego = 'puntos'
+                            self.running = False
                         elif icono.name == 'help':
                             pass
                         elif icono.name == 'j1':
@@ -191,6 +193,9 @@ class MainMenu:
             juego.execute()
         elif self.juego == 'j4':
             juego = JuegoCuatro.JuegoCuatro()
+            juego.execute()
+        elif self.juego== 'puntos':
+            juego = pantalla_puntos_clases.pantalla_puntos()
             juego.execute()
 
 if __name__ == "__main__":
