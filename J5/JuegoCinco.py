@@ -23,6 +23,8 @@ except ImportError as error:
 
 
 class Game:
+    """Implementa el juego cinco. El objetivo es llegar lo mas alto posible saltando con el personaje a traves de distintas
+    plataformas y esquivando a los enemigos. Al perder se vuelve al menu principal"""
     def __init__(self):
         # initialize game window, etc
         pg.init()

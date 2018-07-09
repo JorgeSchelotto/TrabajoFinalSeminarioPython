@@ -54,7 +54,7 @@ WEIGHT = 80
 
 
 class JuegoCuatro:
-    """Menu principal del juego"""
+    """Implementa el juego cuatro. El objetivo es llevar hacia cada palabra la imagen que representa a esa palabra"""
     def __init__(self):
         self.running = True
         self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
@@ -64,6 +64,7 @@ class JuegoCuatro:
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
         self.hits = 0
         self.crash = False
+        self.music = True
 
 
 
@@ -74,6 +75,9 @@ class JuegoCuatro:
         pygame.mixer.init()
         #self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         pygame.display.set_caption("Main Menu")
+        pygame.display.set_caption("Main Menu")
+        pygame.mixer.music.load(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'JuegoCuatro.mp3'))
+        pygame.mixer.music.play(loops=-1)
 
     def clean_up(self):
         """Limpia los módulos de pygame"""
@@ -94,9 +98,16 @@ class JuegoCuatro:
                         if icono.name == 'quit':
                             self.running = False
                         elif icono.name == 'music':
-                            pass
-                        elif icono.name == 'credits':
-                            pass
+                            self.music = not self.music
+                            print(icono.name)
+                            if self.music:
+                                pygame.mixer.music.unpause()
+                                icono.image = pygame.transform.scale(
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_ON_J4.png")), (73, 73))
+                            else:
+                                pygame.mixer.music.pause()
+                                icono.image = pygame.transform.scale(
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_OFF_J4.png")), (73, 73))
                         elif icono.name == 'help':
                             pass
                 for Player in player:
@@ -107,16 +118,15 @@ class JuegoCuatro:
                     Player.setClick(False)
                     for Enemigo in enemigos:
                         if pygame.sprite.collide_rect(Player, Enemigo):
-                            print('Toque un enemigo!', Enemigo.getNombre())
+
                             if Player.getPalabra().upper() == Enemigo.getNombre():
                                 print(Player.getPalabra()[0].upper(), Enemigo.getNombre() )
                                 Player.rect.center = Enemigo.rect.center
-                                print('Palabra {} toco a Imagen {}. Suma 10!'.format(Player.getPalabra(), Enemigo.getNombre()))
                                 Player.collide = True
                                 self.crash = True
-                    if self.crash:
-                        self.hits = self.hits + 1
-                        self.crash = False
+                            if self.crash:
+                                self.hits = self.hits + 1
+                                self.crash = False
 
 
     def randomEnemigos(self):
@@ -222,7 +232,7 @@ class JuegoCuatro:
 
         # Setea iconos
         iconos = [Icono('quit', os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J4.png"), 1300, 50),
-                  Icono('music_on', os.path.join(IMAGE_FOLDER, "musica_ON_J4.png"), 1300, 135),
+                  Icono('music', os.path.join(IMAGE_FOLDER, "musica_ON_J4.png"), 1300, 135),
                   Icono('help', os.path.join(IMAGE_FOLDER, "ayuda_J4.png"), 1300, 220)]
 
 

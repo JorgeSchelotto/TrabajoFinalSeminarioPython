@@ -65,6 +65,7 @@ class MainMenu:
         self.load = pygame.image.load(os.path.join(IMAGE_FOLDER, "fondo_main.png")).convert()
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
         self.juego = ''
+        self.music = True
 
 
 
@@ -75,6 +76,8 @@ class MainMenu:
         pygame.mixer.init()
         #self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         pygame.display.set_caption("Main Menu")
+        pygame.mixer.music.load(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'MainMenu.mp3'))
+        pygame.mixer.music.play(loops=-1)
 
     def clean_up(self):
         """Limpia los módulos de pygame"""
@@ -95,7 +98,15 @@ class MainMenu:
                         if icono.name == 'quit':
                             self.running = False
                         elif icono.name == 'music':
-                            pass
+                            self.music = not self.music
+                            print(icono.name)
+                            if self.music:
+                                pygame.mixer.music.unpause()
+                                icono.image = pygame.transform.scale(pygame.image.load(os.path.join(IMAGE_FOLDER, "sonido_on.png")), (73, 73))
+                            else:
+                                pygame.mixer.music.pause()
+                                icono.image = pygame.transform.scale(
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "sonido_off.png")), (73, 73))
                         elif icono.name == 'credits':
                             pass
                         elif icono.name == 'help':
@@ -131,12 +142,13 @@ class MainMenu:
                   Icono('j4', JUEGOCUATRO_FOLDER, 1140, 610), Icono('quit', os.path.join(IMAGE_FOLDER, "quit_suite.png"), 1250, 85),
                   Icono('j4', JUEGOCUATRO_FOLDER, 1140, 610),
                   Icono('random', os.path.join(IMAGE_FOLDER, "shuffle.png"),190, 300),
-                  Icono('music_on', os.path.join(IMAGE_FOLDER, "sonido_on.png"), 1250, 185),
+                  Icono('music', os.path.join(IMAGE_FOLDER, "sonido_on.png"), 1250, 185),
                   Icono('help', os.path.join(IMAGE_FOLDER, "ayuda.png"), 1250, 285),
                   Icono('credits', os.path.join(IMAGE_FOLDER, "creditos.png"), 1250, 385)]
 
 
         while self.running:
+
             """Loop principal del programa"""
             self.clock.tick(self.FPS)
             self.screen.blit(self.image, (0, 0))

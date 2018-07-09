@@ -70,6 +70,7 @@ class JuegoUno:
         self.hits = 0
         self.crash = True
         self.finish = False
+        self.music = True
 
 
 
@@ -80,6 +81,8 @@ class JuegoUno:
         pygame.mixer.init()
         #self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         pygame.display.set_caption("Main Menu")
+        pygame.mixer.music.load(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'JuegoDos.mp3'))
+        pygame.mixer.music.play(loops=-1)
 
     def clean_up(self):
         """Limpia los módulos de pygame"""
@@ -100,9 +103,15 @@ class JuegoUno:
                         if icono.name == 'quit':
                             self.running = False
                         elif icono.name == 'music':
-                            pass
-                        elif icono.name == 'credits':
-                            pass
+                            self.music = not self.music
+                            if self.music:
+                                pygame.mixer.music.unpause()
+                                icono.image = pygame.transform.scale(
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_ON_J3.png")), (73, 73))
+                            else:
+                                pygame.mixer.music.pause()
+                                icono.image = pygame.transform.scale(
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_OFF_J3.png")), (73, 73))
                         elif icono.name == 'help':
                             pass
                 for Player in player:
@@ -230,7 +239,7 @@ class JuegoUno:
 
         self.on_init()
         iconos = [Icono('quit', os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J1.png"), 1300, 50),
-                  Icono('music_on', os.path.join(IMAGE_FOLDER, "musica_ON_J1.png"), 1300, 155),
+                  Icono('music', os.path.join(IMAGE_FOLDER, "musica_ON_J1.png"), 1300, 155),
                   Icono('help', os.path.join(IMAGE_FOLDER, "ayuda_j1.png"), 1300, 255)]
 
         dic_letras = self.randomEnemigos()

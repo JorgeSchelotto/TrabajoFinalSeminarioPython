@@ -57,7 +57,8 @@ WEIGHT = 80
 
 
 class JuegoDos:
-    """Menu principal del juego"""
+    """Implementa el juego dos. El objetivo es llevar hacia cada imagen las silabas que componen su nombre"""
+
     def __init__(self):
         self.running = True
         self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
@@ -70,7 +71,7 @@ class JuegoDos:
         self.crash = False
         self.phantom = []
         self.masc = False
-
+        self.music = True
 
 
     def on_init(self):
@@ -78,8 +79,10 @@ class JuegoDos:
         print("Load!")
         pygame.init()
         pygame.mixer.init()
-        #self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         pygame.display.set_caption("Main Menu")
+        pygame.display.set_caption("juego Dos")
+        pygame.mixer.music.load(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'JuegoDos.mp3'))
+        pygame.mixer.music.play(loops=-1)
 
     def clean_up(self):
         """Limpia los módulos de pygame"""
@@ -100,7 +103,16 @@ class JuegoDos:
                         if icono.name == 'quit':
                             self.running = False
                         elif icono.name == 'music':
-                            pass
+                            self.music = not self.music
+                            print(icono.name)
+                            if self.music:
+                                pygame.mixer.music.unpause()
+                                icono.image = pygame.transform.scale(
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_ON_J2.png")), (73, 73))
+                            else:
+                                pygame.mixer.music.pause()
+                                icono.image = pygame.transform.scale(
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_OFF_J2.png")), (73, 73))
                         elif icono.name == 'credits':
                             pass
                         elif icono.name == 'help':
@@ -119,6 +131,7 @@ class JuegoDos:
                                 Player.collide = True
                                 if Enemigo.getNombre() not in self.phantom:
                                     self.phantom.append(Enemigo.getNombre())
+                                    # Si hubo colicion, reemplaza la imagen nula por la silaba corrspondiente.
                                     for Enemigo in enemigos:
                                         if Enemigo.getNombre().lower() in self.phantom:
                                             mascara.append(
@@ -134,11 +147,12 @@ class JuegoDos:
 
     def ImagenesNulasRandom(self):
         """Genera una lista de dos imagenes que serviran de muestras para armar las dos palabras con las silabas."""
+
         imagenesNulas_folder = os.path.join(os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j2"), "imagenes"), "faciles")
         lista_imagenesNulas = os.listdir(imagenesNulas_folder)
+
         # Mezclo la lista de imagenes
         random.shuffle(lista_imagenesNulas)
-
 
         # Creo diccionarios segun la dificultad de juego
         faciles = {'abanico':['a', 'ba', 'ni', 'co'], 'auto': ['au', 'to'], 'banana': ['ba','na','na'], 'elefante': ['e', 'le', 'fan', 'te'],
@@ -148,17 +162,11 @@ class JuegoDos:
 
         # cargo en forma aleatoria un diccionario con dos palabras y sus correspondiente división en silabas
         dict_img = {}
-        num = 0
         for num in range(2):
             img = lista_imagenesNulas[num]
             dict_img[img] = [faciles[img.replace('.png', '')], os.path.join(imagenesNulas_folder, img)]
 
-
         return dict_img
-
-
-
-
 
     def randomEnemigos(self):
         """Genera un diccionario aleatorio y sin repeticiones con los nombres y las direcciones de los archivos de letras"""
@@ -172,17 +180,13 @@ class JuegoDos:
             if valor not in con:
                 con.append(valor)
 
-
         lista = []
         for num in con:
             lista.append(lista_enemigos[num])
 
-
         pal2 = {}
         for palabras in lista:
             pal2[palabras.replace('\n', '').upper()] = os.path.join(enemies_folder, palabras)
-
-
 
         return pal2
 
@@ -192,12 +196,8 @@ class JuegoDos:
         players_folder = os.path.join(os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j2"), "silabas"), "faciles")
         lista_players = os.listdir(players_folder)
 
-        print('Begin randomPlayers()')
-
-
         silabas = []
         numeros = random.sample(range(0, len(lista_players)-1), len(lista_players)-1)
-        print('numeros', numeros)
         while len(silabas) < 16:
             print('While')
             for key, value in dic_silabas.items():
@@ -216,8 +216,6 @@ class JuegoDos:
 
         # Desordeno silabas
         random.shuffle(silabas)
-        print('silabas caos', silabas)
-
 
         # Cargo el diccionario final que retornara el metodo
         pal2 = {}
@@ -225,10 +223,6 @@ class JuegoDos:
             pal2[palabras.replace('\n', '')] = os.path.join(
                 os.path.join(os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j2"), "silabas"),
                              'faciles'), palabras).replace('\n', '')
-
-        print(pal2)
-        print('End randomPlayers()')
-
         return pal2
 
     def win(self, image):
@@ -251,7 +245,7 @@ class JuegoDos:
 
         # Setea los iconos
         iconos = [Icono('quit', os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J2.png"), 1300, 50),
-                  Icono('music_on', os.path.join(IMAGE_FOLDER, "musica_ON_J2.png"), 1300, 135),
+                  Icono('music', os.path.join(IMAGE_FOLDER, "musica_ON_J2.png"), 1300, 135),
                   Icono('help', os.path.join(IMAGE_FOLDER, "ayuda_J2.png"), 1300, 220)]
 
         # Setea imagenes estaticas que sirven como muestra
@@ -312,12 +306,8 @@ class JuegoDos:
             self.clock.tick(self.FPS)
             self.screen.blit(self.image, (0, 0))
 
-
-
-
             # Update
             self.check_events(iconos, jugadores, letras, mascara, phantons)
-
 
             for icono in iconos:
                 icono.update(self.screen)
@@ -326,12 +316,8 @@ class JuegoDos:
                 else:
                     icono.hover = False
 
-
             for imagen in img:
                 imagen.update(self.screen)
-
-
-
 
             for enemy in letras:
                 enemy.update(self.screen)
@@ -342,14 +328,9 @@ class JuegoDos:
             for jugador in jugadores:
                 jugador.update(self.screen)
 
-
-
-
             # Draw / Render
             if self.win(image):
                 break
-
-
 
             # update la pantalla
             pygame.display.update()

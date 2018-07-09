@@ -48,7 +48,7 @@ GAME_FOLDER = os.path.dirname(__file__)
 FOLDER = os.path.join(GAME_FOLDER, "Imagenes")
 IMG_FOLDER = os.path.join(FOLDER, "j3")
 GARBAGE_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j3"), "logo_J3b.png")
-IMAGE_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j3"), "E.png")
+IMAGE_FOLDER = os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j3")
 MUSIC_FOLDER = None
 SOUNDS_FOLDER = None
 HEIGHT = 180
@@ -57,7 +57,8 @@ WEIGHT = 170
 
 
 class JuegoTres:
-    """Menu principal del juego"""
+    """Implementa el juego tres. El objetivo es llevar hacia el tacho la imagen cuyo nombre no comienza con la misma letra
+    que las demas imagenes"""
     def __init__(self):
         self.running = True
         self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
@@ -67,6 +68,7 @@ class JuegoTres:
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
         self.hits = 0
         self.crash = False
+        self.music = True
 
 
 
@@ -77,6 +79,8 @@ class JuegoTres:
         pygame.mixer.init()
         #self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         pygame.display.set_caption("Main Menu")
+        pygame.mixer.music.load(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'JuegoTres.mp3'))
+        pygame.mixer.music.play(loops=-1)
 
     def clean_up(self):
         """Limpia los módulos de pygame"""
@@ -97,7 +101,15 @@ class JuegoTres:
                         if icono.name == 'quit':
                             self.running = False
                         elif icono.name == 'music':
-                            pass
+                            self.music = not self.music
+                            if self.music:
+                                pygame.mixer.music.unpause()
+                                icono.image = pygame.transform.scale(
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_ON_J3.png")), (73, 73))
+                            else:
+                                pygame.mixer.music.pause()
+                                icono.image = pygame.transform.scale(
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_OFF_J3.png")), (73, 73))
                         elif icono.name == 'credits':
                             pass
                         elif icono.name == 'help':
@@ -196,7 +208,7 @@ class JuegoTres:
 
         # Cargo iconos
         iconos = [Icono('quit', os.path.join(IMG_FOLDER, "cerrar_ayuda_J3.png"), 1300, 50),
-                  Icono('music_on', os.path.join(IMG_FOLDER, "musica_ON_J3.png"), 1300, 155),
+                  Icono('music', os.path.join(IMG_FOLDER, "musica_ON_J3.png"), 1300, 155),
                   Icono('help', os.path.join(IMG_FOLDER, "ayuda_J3.png"), 1300, 255)]
 
 
