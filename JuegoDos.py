@@ -84,6 +84,21 @@ class JuegoDos:
         pygame.mixer.music.load(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'JuegoDos.mp3'))
         pygame.mixer.music.play(loops=-1)
 
+    def winMusic(self):
+        """Reproduce sonido de ganador"""
+        beep = pygame.mixer.Sound(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'Win.wav'))
+        beep.play()
+
+    def beepWin(self):
+        """Reproduce de que acerto una combinacion correctamente"""
+        beep = pygame.mixer.Sound(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'Pop.wav'))
+        beep.play()
+
+    def beepLose(self):
+        """Reproduce sonido si no acerto correctamente."""
+        beep = pygame.mixer.Sound(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'Mal.wav'))
+        beep.play()
+
     def clean_up(self):
         """Limpia los módulos de pygame"""
         pygame.quit()
@@ -127,8 +142,11 @@ class JuegoDos:
                     Player.setClick(False)
                     for Enemigo in enemigos:
                         if pygame.sprite.collide_rect(Player, Enemigo):
+                            if Player.getPalabra().upper() != Enemigo.getNombre().upper():
+                                self.beepLose()
                             if Player.getPalabra().upper() == Enemigo.getNombre().upper():
                                 Player.collide = True
+                                self.beepWin()
                                 if Enemigo.getNombre() not in self.phantom:
                                     self.phantom.append(Enemigo.getNombre())
                                     # Si hubo colicion, reemplaza la imagen nula por la silaba corrspondiente.
@@ -230,6 +248,8 @@ class JuegoDos:
         bool = False
         if self.goal != 0 and self.hits == self.goal:
             bool = True
+            self.winMusic()
+            pygame.mixer.music.pause()
             for clock in range(390):
                 image.update(self.screen)
                 pygame.display.update()

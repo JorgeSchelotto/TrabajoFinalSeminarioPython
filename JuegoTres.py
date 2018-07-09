@@ -82,6 +82,21 @@ class JuegoTres:
         pygame.mixer.music.load(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'JuegoTres.mp3'))
         pygame.mixer.music.play(loops=-1)
 
+    def winMusic(self):
+        """Reproduce sonido de ganador"""
+        beep = pygame.mixer.Sound(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'Win.wav'))
+        beep.play()
+
+    def beepWin(self):
+        """Reproduce de que acerto una combinacion correctamente"""
+        beep = pygame.mixer.Sound(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'Pop.wav'))
+        beep.play()
+
+    def beepLose(self):
+        """Reproduce sonido si no acerto correctamente."""
+        beep = pygame.mixer.Sound(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'Mal.wav'))
+        beep.play()
+
     def clean_up(self):
         """Limpia los módulos de pygame"""
         pygame.quit()
@@ -121,11 +136,11 @@ class JuegoTres:
                 for Player in player:
                     Player.setClick(False)
                     if pygame.sprite.collide_rect(Player, Enemigo):
-                        print('Toque un enemigo!', Enemigo.getNombre())
+                        if Player.getPalabra()[0] == Enemigo.getNombre()[0]:
+                            self.beepLose()
                         if Player.getPalabra()[0] != Enemigo.getNombre()[0]:
-                            print(Player.getPalabra()[0].upper(), Enemigo.getNombre() )
+                            self.beepWin()
                             Player.rect.center = Enemigo.rect.center
-                            print('Palabra {} toco a Imagen {}. Suma 10!'.format(Player.getPalabra(), Enemigo.getNombre()))
                             Player.collide = True
                             self.crash = True
                 if self.crash:
@@ -191,6 +206,8 @@ class JuegoTres:
         bool = False
         if self.hits == 1:
             bool = True
+            self.winMusic()
+            pygame.mixer.music.pause()
             for clock in range(390):
                 image.update(self.screen)
                 pygame.display.update()

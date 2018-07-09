@@ -68,7 +68,7 @@ class JuegoUno:
         self.load = pygame.image.load(os.path.join(IMAGE_FOLDER, "00_fondo-01.png")).convert()
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
         self.hits = 0
-        self.crash = True
+        self.crash = False
         self.finish = False
         self.music = True
 
@@ -89,6 +89,21 @@ class JuegoUno:
         pygame.quit()
         print("Quit!")
 
+    def winMusic(self):
+        """Reproduce sonido de ganador"""
+        beep = pygame.mixer.Sound(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'Win.wav'))
+        beep.play()
+
+    def beepWin(self):
+        """Reproduce de que acerto una combinacion correctamente"""
+        beep = pygame.mixer.Sound(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'Pop.wav'))
+        beep.play()
+
+    def beepLose(self):
+        """Reproduce sonido si no acerto correctamente."""
+        beep = pygame.mixer.Sound(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'Mal.wav'))
+        beep.play()
+
     def check_events(self, iconos, player, enemigos):
         """Verifico los eventos dentro del loop"""
         for event in pygame.event.get():
@@ -107,11 +122,11 @@ class JuegoUno:
                             if self.music:
                                 pygame.mixer.music.unpause()
                                 icono.image = pygame.transform.scale(
-                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_ON_J3.png")), (73, 73))
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_ON_J1.png")), (73, 73))
                             else:
                                 pygame.mixer.music.pause()
                                 icono.image = pygame.transform.scale(
-                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_OFF_J3.png")), (73, 73))
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_OFF_J1.png")), (73, 73))
                         elif icono.name == 'help':
                             pass
                 for Player in player:
@@ -123,19 +138,16 @@ class JuegoUno:
                     Player.setClick(False)
                     for Enemigo in enemigos:
                         if pygame.sprite.collide_rect(Player, Enemigo):
-                            print('Toque un enemigo!', Enemigo.getNombre())
+                            if Player.getPalabra()[0].upper() != Enemigo.getNombre():
+                                self.beepLose()
                             if Player.getPalabra()[0].upper() == Enemigo.getNombre():
-                                print(Player.getPalabra()[0].upper(), Enemigo.getNombre() )
+                                self.beepWin()
                                 Player.rect.center = Enemigo.rect.center
-                                print('Palabra {} toco a Imagen {}. Suma 10!'.format(Player.getPalabra(), Enemigo.getNombre()))
-                                Player.remove()
                                 Player.collide = True
-                                self.crash = False
-                                if not self.crash:
+                                self.crash = True
+                                if self.crash:
                                     self.hits = self.hits + 1
-                                    self.crash = True
-
-
+                                    self.crash = False
 
     def randomEnemigos(self):
         """Genera un diccionario aleatorio y sin repeticiones con los nombres y las direcciones de los archivos de letras"""
@@ -146,7 +158,6 @@ class JuegoUno:
         con=[]
         while len(con) != 3:
             valor = random.randrange(5)
-            print(valor)
             if valor not in con:
                 con.append(valor)
 
@@ -173,7 +184,6 @@ class JuegoUno:
         #Creo lista con las palabras del archivo
         pal = []
         for palabras in file:
-            print(palabras)
             pal.append(palabras.replace('\n', ''))
 
         file.close()
@@ -184,12 +194,9 @@ class JuegoUno:
             valor = random.randrange(6)
             if valor not in con:
                 con.append(valor)
-        print(con)
 
         lista = []
         num = random.randrange(len(pal))
-        print('Tamaño del archivo: ', len(pal))
-        print(dic_letras)
         letras =[]
         repetida = ''
         while len(lista) < 3:
@@ -199,20 +206,12 @@ class JuegoUno:
                         lista.append(pal[num])
                         letras.append(pal[num][0].upper())
                     repetida = pal[num]
-                print(repetida)
             num = random.randrange(len(pal))
-            print('no se cumple condicion')
-            print(lista)
             #buscar mas con I y con O
         for palabra in pal:
             if lista[random.randrange(2)][0] == palabra[0] and lista[random.randrange(2)] != palabra:
                 lista.append(palabra)
                 break
-        print(lista)
-
-
-
-
 
         pal2 = {}
         for palabras in lista:
@@ -220,7 +219,6 @@ class JuegoUno:
                 os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), "Imagenes"),
                              'facil'), palabras + '.png').replace('\n', '')
 
-        print(pal2)
 
         return pal2
 
@@ -229,6 +227,8 @@ class JuegoUno:
         bool = False
         if self.hits >= 3:
             bool = True
+            self.winMusic()
+            pygame.mixer.music.pause()
             for clock in range(390):
                 image.update(self.screen)
                 pygame.display.update()

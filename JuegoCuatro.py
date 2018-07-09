@@ -79,6 +79,21 @@ class JuegoCuatro:
         pygame.mixer.music.load(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'JuegoCuatro.mp3'))
         pygame.mixer.music.play(loops=-1)
 
+    def winMusic(self):
+        """Reproduce sonido de ganador"""
+        beep = pygame.mixer.Sound(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'Win.wav'))
+        beep.play()
+
+    def beepWin(self):
+        """Reproduce de que acerto una combinacion correctamente"""
+        beep = pygame.mixer.Sound(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'Pop.wav'))
+        beep.play()
+
+    def beepLose(self):
+        """Reproduce sonido si no acerto correctamente."""
+        beep = pygame.mixer.Sound(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'Mal.wav'))
+        beep.play()
+
     def clean_up(self):
         """Limpia los módulos de pygame"""
         pygame.quit()
@@ -99,7 +114,6 @@ class JuegoCuatro:
                             self.running = False
                         elif icono.name == 'music':
                             self.music = not self.music
-                            print(icono.name)
                             if self.music:
                                 pygame.mixer.music.unpause()
                                 icono.image = pygame.transform.scale(
@@ -118,9 +132,10 @@ class JuegoCuatro:
                     Player.setClick(False)
                     for Enemigo in enemigos:
                         if pygame.sprite.collide_rect(Player, Enemigo):
-
+                            if Player.getPalabra().upper() != Enemigo.getNombre():
+                                self.beepLose()
                             if Player.getPalabra().upper() == Enemigo.getNombre():
-                                print(Player.getPalabra()[0].upper(), Enemigo.getNombre() )
+                                self.beepWin()
                                 Player.rect.center = Enemigo.rect.center
                                 Player.collide = True
                                 self.crash = True
@@ -174,39 +189,29 @@ class JuegoCuatro:
             valor = random.randrange(len(lista_players)-1)
             if valor not in con:
                 con.append(valor)
-        print(con)
 
         lista = []
         num = 0
-        print('Tamaño del archivo: ', len(lista_players))
-        print(dic_letras)
         letras =[]
         while len(lista) < 4:
             if lista_players[num].upper() in dic_letras:
-                print(lista_players[num].upper())
                 # si esta en el diccionario de palabras
                 lista.append(lista_players[num])
                 letras.append(lista_players[num][0].upper())
             num = num +1
 
-            print('no se cumple condicion')
-            print(lista_players[num].upper())
-            print(dic_letras)
-            print(lista)
+
             #buscar mas con I y con O
         for palabra in lista_players:
             if lista[random.randrange(2)][0] == palabra[0] and lista[random.randrange(2)] != palabra:
                 lista.append(palabra)
                 break
-        print(lista)
 
         pal2 = {}
         for palabras in lista:
             pal2[palabras.replace('\n', '')] = os.path.join(
                 os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), "Imagenes"),
                              'facil'), palabras).replace('\n', '')
-
-        print('pal2 ' ,pal2)
 
         return pal2
 
@@ -215,6 +220,8 @@ class JuegoCuatro:
         bool = False
         if self.hits == 4:
             bool = True
+            self.winMusic()
+            pygame.mixer.music.pause()
             for clock in range(390):
                 image.update(self.screen)
                 pygame.display.update()
