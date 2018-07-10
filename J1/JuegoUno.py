@@ -105,7 +105,7 @@ class JuegoUno:
         beep = pygame.mixer.Sound(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'Mal.wav'))
         beep.play()
 
-    def check_events(self, iconos, player, enemigos):
+    def check_events(self, iconos, player, enemigos, image):
         """Verifico los eventos dentro del loop"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -149,6 +149,7 @@ class JuegoUno:
                         if pygame.sprite.collide_rect(Player, Enemigo):
                             if Player.getPalabra()[0].upper() != Enemigo.getNombre():
                                 self.beepLose()
+                                self.nop(image)
                             if Player.getPalabra()[0].upper() == Enemigo.getNombre():
                                 self.beepWin()
                                 Player.rect.center = Enemigo.rect.center
@@ -243,6 +244,12 @@ class JuegoUno:
                 pygame.display.update()
         return bool
 
+    def nop(self, image):
+        """Imprime una patalla de error si se gano la partida."""
+        for clock in range(290):
+            image.update(self.screen)
+            pygame.display.update()
+
     def execute(self):
         """Loop del juego"""
 
@@ -272,8 +279,9 @@ class JuegoUno:
 
 
         # Seteo imagen que se mostrará al ganar
-        image = Premio.Cartel_Premio(700, 300)
+        image = Premio.Cartel_Premio('ganaste.png', 700, 300)
         cartel =Imagen('cartel', os.path.join(IMAGE_FOLDER, "cartel_ayuda_J1.png"), 1100, 300, 317, 100)
+        nop = Premio.Cartel_Premio('error.png', 700, 300)
 
 
 
@@ -282,7 +290,7 @@ class JuegoUno:
             self.clock.tick(self.FPS)
             self.screen.blit(self.image, (0, 0))
 
-            self.check_events(iconos, jugadores, letras)
+
 
 
             # Update
@@ -310,6 +318,8 @@ class JuegoUno:
 
             if self.win(image):
                 break
+
+            self.check_events(iconos, jugadores, letras, nop)
 
 
             # update la pantalla

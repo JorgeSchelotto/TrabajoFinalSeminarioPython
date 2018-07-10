@@ -1,5 +1,6 @@
 #======================================================================================================================
 # Trabajo final para la materia seminario de lenguaje opcion Python -Informatica - UNLP.
+# Suit de videojuegos didacticos.
 # Autores: Burgos Agustin, Schelotto Jorge.
 # Diseño grafico e ilustraciones: Burgos Agustin.
 # Sistema operativo Windows 7 - Trabajando para que funcione tambien en linux

@@ -266,7 +266,7 @@ class JuegoDos:
         self.on_init()
 
         # Seteo imagen que se mostrará al ganar
-        image = Premio.Cartel_Premio(700, 300)
+        image = Premio.Cartel_Premio('ganaste.png',700, 300)
         cartel = Imagen('cartel', os.path.join(IMAGE_FOLDER, "cartel_ayuda_J2.png"), 1100, 300, 317, 100)
 
         # Setea los iconos

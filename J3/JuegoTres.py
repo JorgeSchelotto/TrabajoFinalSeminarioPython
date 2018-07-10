@@ -148,6 +148,7 @@ class JuegoTres:
                         if Player.getPalabra()[0] != Enemigo.getNombre()[0]:
                             self.beepWin()
                             Player.rect.center = Enemigo.rect.center
+                            Player.image = pygame.transform.scale(Player.image, (0, 0))
                             Player.collide = True
                             self.crash = True
                 if self.crash:
@@ -231,7 +232,7 @@ class JuegoTres:
         self.on_init()
 
         # Setea pantalla de ganador
-        image = Premio.Cartel_Premio(700, 300)
+        image = Premio.Cartel_Premio('ganaste.png',700, 300)
         cartel = Imagen('cartel', os.path.join(IMAGE_FOLDER, "cartel_ayuda_J3.png"), 1100, 300, 317, 100)
 
         # Cargo iconos
