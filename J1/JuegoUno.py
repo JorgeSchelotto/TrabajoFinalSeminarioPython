@@ -236,14 +236,14 @@ class JuegoUno:
             bool = True
             self.winMusic()
             pygame.mixer.music.pause()
-            for clock in range(700):
+            for clock in range(900):
                 image.update(self.screen)
                 pygame.display.update()
         return bool
 
     def nop(self, image):
         """Imprime una patalla de error si se gano la partida."""
-        for clock in range(290):
+        for clock in range(700):
             image.update(self.screen)
             pygame.display.update()
 
