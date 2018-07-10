@@ -71,6 +71,8 @@ class JuegoUno:
         self.finish = False
         self.music = True
         self.help = True
+        self.nivel = None
+        self.nivelOk= False
 
 
 
@@ -156,6 +158,7 @@ class JuegoUno:
                                     self.hits = self.hits + 1
                                     self.crash = False
 
+
     def randomEnemigos(self):
         """Genera un diccionario aleatorio y sin repeticiones con los nombres y las direcciones de los archivos de letras"""
         game_folder = os.path.dirname(__file__)
@@ -185,15 +188,12 @@ class JuegoUno:
     def randomPlayers(self, dic_letras):
         """Genera un diccionario aleatorio y sin repeticiones con los nombres y las direcciones de los archivos de imagenes"""
         game_folder = os.path.dirname(__file__)
-        folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), "Imagenes"), 'facil'), 'facil.txt')
 
-        file = open(folder, 'r')
-        #Creo lista con las palabras del archivo
-        pal = []
-        for palabras in file:
-            pal.append(palabras.replace('\n', ''))
 
-        file.close()
+        enemies_folder = os.path.join(
+            os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j1"), "Imagenes"), self.nivel)
+
+        pal = os.listdir(enemies_folder)
 
         # Creo una lista de numeros aleatorios.
         con = []
@@ -224,7 +224,7 @@ class JuegoUno:
         for palabras in lista:
             pal2[palabras.replace('\n', '')] = os.path.join(
                 os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), "Imagenes"),
-                             'facil'), palabras + '.png').replace('\n', '')
+                             self.nivel), palabras).replace('\n', '')
 
 
         return pal2
@@ -251,6 +251,35 @@ class JuegoUno:
         """Loop del juego"""
 
         self.on_init()
+
+        # Seteo niveles
+        facil = Icono('facil', os.path.join(IMAGE_FOLDER, "1.png"), 500, 400)
+        intermedio = Icono('intermedio', os.path.join(IMAGE_FOLDER, "2.png"), 700, 400)
+        dificil = Icono('dificil', os.path.join(IMAGE_FOLDER, "3.png"), 900, 400)
+
+        # Loop de la seleccion de nivel
+        while self.nivel==None:
+
+            pygame.draw.rect(self.screen, (50,200,200),(350,200,700,400),0)
+            facil.update(self.screen)
+            intermedio.update(self.screen)
+            dificil.update(self.screen)
+
+
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == MOUSEBUTTONDOWN:
+                    if facil.rect.collidepoint(event.pos):
+                        self.nivel = 'facil'
+                    if intermedio.rect.collidepoint(event.pos):
+                        self.nivel = 'medio'
+                    if dificil.rect.collidepoint(event.pos):
+                        self.nivel = 'dificiles'
+
+
+        print('listo nivel', self.nivel)
+
+
         iconos = [Icono('quit', os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J1.png"), 1300, 50),
                   Icono('music', os.path.join(IMAGE_FOLDER, "musica_ON_J1.png"), 1300, 155),
                   Icono('help', os.path.join(IMAGE_FOLDER, "ayuda_j1.png"), 1300, 255)]
@@ -280,12 +309,15 @@ class JuegoUno:
         cartel =Imagen('cartel', os.path.join(IMAGE_FOLDER, "cartel_ayuda_J1.png"), 1100, 300, 317, 100)
         nop = Premio.Cartel_Premio(ERROR_FOLDER, 700, 300)
 
+        for m in range(300):
+            print(m)
 
 
         while self.running:
             """Loop principal del programa"""
             self.clock.tick(self.FPS)
             self.screen.blit(self.image, (0, 0))
+
 
 
 
@@ -312,6 +344,7 @@ class JuegoUno:
 
 
             # Draw / Render
+
 
             if self.win(image):
                 break
