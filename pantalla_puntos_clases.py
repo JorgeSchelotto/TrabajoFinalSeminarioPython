@@ -103,7 +103,6 @@ class pantalla_puntos():
             for lineas in f:
                 linea = lineas.replace('\n', '').split()
                 lista_puntajes.append(linea)
-            print(lista_puntajes)
             lista_puntajes2 = sorted(lista_puntajes, key= lambda x: int(x[9]), reverse=True)
             lista_final = []
             for elem in lista_puntajes2:
