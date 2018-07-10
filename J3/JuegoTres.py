@@ -64,7 +64,7 @@ class JuegoTres:
         self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
         self.FPS = 30
-        self.load = pygame.image.load(os.path.join(IMG_FOLDER, "fondo-03.png")).convert()
+        self.load = pygame.image.load(os.path.join(IMG_FOLDER, "fondo-03.png")).convert_alpha()
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
         self.hits = 0
         self.crash = False

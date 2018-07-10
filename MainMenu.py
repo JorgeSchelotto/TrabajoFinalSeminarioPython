@@ -63,7 +63,7 @@ class MainMenu:
         self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
         self.FPS = 30
-        self.load = pygame.image.load(os.path.join(IMAGE_FOLDER, "fondo_main.png")).convert()
+        self.load = pygame.image.load(os.path.join(IMAGE_FOLDER, "fondo_main.png")).convert_alpha()
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
         self.juego = ''
         self.music = True

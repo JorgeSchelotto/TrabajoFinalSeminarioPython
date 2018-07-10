@@ -51,8 +51,7 @@ E_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j1"
 I_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j1"), "I.png")
 O_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j1"), "O.png")
 U_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j1"), "U.png")
-MUSIC_FOLDER = None
-SOUNDS_FOLDER = None
+ERROR_FOLDER = U_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagenes"), "j1"), "error.png")
 HEIGHT = 180
 WEIGHT = 170
 
@@ -65,7 +64,7 @@ class JuegoUno:
         self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         self.clock = pygame.time.Clock()
         self.FPS = 30
-        self.load = pygame.image.load(os.path.join(IMAGE_FOLDER, "00_fondo-01.png")).convert()
+        self.load = pygame.image.load(os.path.join(IMAGE_FOLDER, "00_fondo-01.png")).convert_alpha()
         self.image = pygame.transform.scale(self.load, self.screen.get_size())
         self.hits = 0
         self.crash = False
@@ -136,8 +135,6 @@ class JuegoUno:
                             else:
                                 icono.image = pygame.transform.scale(
                                     pygame.image.load(os.path.join(IMAGE_FOLDER, "ayuda_J1.png")), (73, 73))
-
-
                 for Player in player:
                     if Player.getRect().collidepoint(event.pos):
                         #print('Click palabra')
@@ -239,7 +236,7 @@ class JuegoUno:
             bool = True
             self.winMusic()
             pygame.mixer.music.pause()
-            for clock in range(390):
+            for clock in range(700):
                 image.update(self.screen)
                 pygame.display.update()
         return bool
@@ -281,7 +278,7 @@ class JuegoUno:
         # Seteo imagen que se mostrará al ganar
         image = Premio.Cartel_Premio('ganaste.png', 700, 300)
         cartel =Imagen('cartel', os.path.join(IMAGE_FOLDER, "cartel_ayuda_J1.png"), 1100, 300, 317, 100)
-        nop = Premio.Cartel_Premio('error.png', 700, 300)
+        nop = Premio.Cartel_Premio(ERROR_FOLDER, 700, 300)
 
 
 

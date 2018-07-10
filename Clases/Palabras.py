@@ -22,9 +22,8 @@ class Palabras(pygame.sprite.Sprite):
         super().__init__()
         self.__palabra = nombre
         self.__click = False
-        self.image = pygame.image.load(ruta)
+        self.image = pygame.image.load(ruta).convert_alpha()
         self.rect = self.image.get_rect()
-        self.mask = pygame.mask.from_surface(self.image)
         self.collide = False
         self.posX = x
         self.posY = y

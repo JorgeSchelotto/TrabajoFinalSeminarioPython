@@ -36,8 +36,7 @@ class Imagen(pygame.sprite.Sprite):
     def __init__(self, nombre, ruta, x, y, H, W):
         super(Imagen, self).__init__()
         self.__nombre = nombre
-        self.image = pygame.image.load(ruta)
-        self.image = pygame.transform.scale(self.image, (H, W))
+        self.image = pygame.transform.scale(pygame.image.load(ruta), (H, W)).convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.mask = pygame.mask.from_surface(self.image)

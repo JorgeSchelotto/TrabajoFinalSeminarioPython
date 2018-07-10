@@ -36,8 +36,7 @@ __status__ = 'Production'
 class ImagenNula:
     def __init__(self, nombre, ruta, x, y, H, W):
         self.__nombre = nombre
-        self.image = pygame.image.load(ruta)
-        self.image = pygame.transform.scale(self.image, (H, W))
+        self.image = pygame.transform.scale(pygame.image.load(ruta), (H, W)).convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
 

@@ -38,7 +38,7 @@ __status__ = 'Production'
 class Silaba(Palabras.Palabras):
     def __init__(self, ruta, nombre, x, y, HEIGHT, WEIGHT):
         super().__init__(ruta, nombre, x, y)
-        self.image = pygame.transform.scale(self.image, (HEIGHT, WEIGHT))
+        self.image = pygame.transform.scale(self.image, (HEIGHT, WEIGHT)).convert_alpha()
         self.rect = self.image.get_rect()
         self.correct = True
 
