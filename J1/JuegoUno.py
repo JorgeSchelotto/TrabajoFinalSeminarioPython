@@ -259,13 +259,12 @@ class JuegoUno:
 
         # Loop de la seleccion de nivel
         while self.nivel==None:
+            # Nosale si no elige nivel
 
             pygame.draw.rect(self.screen, (50,200,200),(350,200,700,400),0)
             facil.update(self.screen)
             intermedio.update(self.screen)
             dificil.update(self.screen)
-
-
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == MOUSEBUTTONDOWN:
