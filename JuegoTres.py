@@ -69,6 +69,7 @@ class JuegoTres:
         self.hits = 0
         self.crash = False
         self.music = True
+        self.help = True
 
 
 
@@ -128,7 +129,13 @@ class JuegoTres:
                         elif icono.name == 'credits':
                             pass
                         elif icono.name == 'help':
-                            pass
+                            self.help = not self.help
+                        if not self.help:
+                            icono.image = pygame.transform.scale(
+                                pygame.image.load(os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J3.png")), (73, 73))
+                        else:
+                            icono.image = pygame.transform.scale(
+                                pygame.image.load(os.path.join(IMAGE_FOLDER, "ayuda_J3.png")), (73, 73))
                 for Player in player:
                     if Player.getRect().collidepoint(event.pos):
                         Player.setClick(True)
@@ -156,9 +163,7 @@ class JuegoTres:
 
         # Genero un diccionario cuya clave y valor son un elemento de lista_enemigos elegido en forma aleatoria.
         num = random.randrange(len(lista_enemigos)-1)
-        print(num)
         pal = [lista_enemigos[num].replace('\n', ''), os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j3"),"imagenes"), "faciles"), lista_enemigos[num]).replace('\n', '')))]
-        print(pal)
         return pal
 
 
@@ -173,8 +178,14 @@ class JuegoTres:
         # Cargo una lista con palabras que empiesen con la misma letra que la imagen elegida en la funcion randomEnemigos()
         imagenes = []
         for imagen in lista_enemigos:
-            if imagen[0] == dic_letras[0][0]:
+            if len(imagenes) == 5:
+                break
+            if not(imagen in imagenes) and imagen[0] == dic_letras[0][0]:
+                print(not(imagen in imagenes))
                 imagenes.append(imagen)
+
+
+
 
         # Carga una imagen aleatoria cuyo nombre no comience con la primera letra de la imagen elegida
         num = random.randrange(len(lista_enemigos) - 1)
@@ -183,7 +194,7 @@ class JuegoTres:
                 imagenes.append(lista_enemigos[num])
             else:
                 num = random.randrange(len(lista_enemigos) - 1)
-            print('No se cumple la condicion', lista_enemigos[num][0], dic_letras[0][0])
+
 
 
         # Desordeno la lista imagenes
@@ -197,7 +208,6 @@ class JuegoTres:
                 os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j3"), "Imagenes"),
                              'faciles'), palabras).replace('\n', '')
 
-        print(pal2)
 
         return pal2
 
@@ -222,6 +232,7 @@ class JuegoTres:
 
         # Setea pantalla de ganador
         image = Premio.Cartel_Premio(700, 300)
+        cartel = Imagen('cartel', os.path.join(IMAGE_FOLDER, "cartel_ayuda_J3.png"), 1100, 300, 317, 100)
 
         # Cargo iconos
         iconos = [Icono('quit', os.path.join(IMG_FOLDER, "cerrar_ayuda_J3.png"), 1300, 50),
@@ -233,32 +244,32 @@ class JuegoTres:
 
         # Cargo imagen del tacho
         nombre = self.randomEnemigos()
-        print('nombre: ', nombre)
-        print(nombre)
+
         tacho = Imagen(nombre[0], GARBAGE_FOLDER, 160, 570, 169, 200)
 
         # Cargo imagen a comparar
-        print(nombre[1])
         imagen = Imagen(nombre[0], nombre[1], 200, 350, HEIGHT, WEIGHT)
 
         # Cargo fichas
         dic_jugadores = self.randomPlayers(nombre).copy()
         jugadores = []
 
-        PALABRAS_X_ABAJO = 520
-        PALABRAS_Y_ARRIVA = 220
-        PALABRAS_Y = 570
-        PALABRAS_X = 520
+        PALABRAS_Y_ABAJO = 550
+        PALABRAS_Y_ARRIVA = 260
+        PALABRAS_X = 450
+        PALABRAS_X_ARRIVA = 450
         cant = 0
         for nombre, ruta in dic_jugadores.items():
             if cant < 3:
-                PALABRAS_Y = 220
-                jugadores.append(Palabras(ruta, nombre.replace('.png', ''), PALABRAS_X, PALABRAS_Y))
+                jugadores.append(Palabras(ruta, nombre.replace('.png', ''), PALABRAS_X, PALABRAS_Y_ABAJO))
                 PALABRAS_X = PALABRAS_X + 320
                 cant = cant + 1
-            elif cant > 3:
-                jugadores.append(Palabras(ruta, nombre, PALABRAS_X, PALABRAS_Y_ARRIVA))
-                PALABRAS_X = PALABRAS_X + 320
+                print(cant)
+            elif cant >= 3:
+                jugadores.append(Palabras(ruta, nombre.replace('.png', ''), PALABRAS_X_ARRIVA, PALABRAS_Y_ARRIVA))
+                PALABRAS_X_ARRIVA = PALABRAS_X_ARRIVA + 320
+                cant = cant + 1
+
 
 
 
@@ -290,6 +301,9 @@ class JuegoTres:
             # Render de las fichas
             for jugador in jugadores:
                 jugador.update(self.screen)
+
+            if not self.help:
+                cartel.update(self.screen)
 
 
 

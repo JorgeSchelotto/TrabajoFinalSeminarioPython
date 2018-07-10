@@ -65,6 +65,7 @@ class JuegoCuatro:
         self.hits = 0
         self.crash = False
         self.music = True
+        self.help = True
 
 
 
@@ -123,7 +124,13 @@ class JuegoCuatro:
                                 icono.image = pygame.transform.scale(
                                     pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_OFF_J4.png")), (73, 73))
                         elif icono.name == 'help':
-                            pass
+                            self.help = not self.help
+                            if not self.help:
+                                icono.image = pygame.transform.scale(
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J4.png")), (73, 73))
+                            else:
+                                icono.image = pygame.transform.scale(
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "ayuda_J4.png")), (73, 73))
                 for Player in player:
                     if Player.getRect().collidepoint(event.pos):
                         Player.setClick(True)
@@ -236,6 +243,7 @@ class JuegoCuatro:
 
         # Setea pantalla de ganador
         image = Premio.Cartel_Premio(700, 300)
+        cartel = Imagen('cartel', os.path.join(IMAGE_FOLDER, "cartel_ayuda_J4.png"), 1100, 300, 317, 100)
 
         # Setea iconos
         iconos = [Icono('quit', os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J4.png"), 1300, 50),
@@ -286,7 +294,8 @@ class JuegoCuatro:
             for jugador in jugadores:
                 jugador.update(self.screen)
 
-
+            if not self.help:
+                cartel.update(self.screen)
 
             # Draw / Render
             if self.win(image):

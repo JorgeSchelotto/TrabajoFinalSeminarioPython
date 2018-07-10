@@ -30,12 +30,13 @@ class Game:
         # initialize game window, etc
         pg.init()
         pg.mixer.init()
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pg.display.set_mode((480, 766), FULLSCREEN)
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         self.running = True
         self.font_name = pg.font.match_font(FONT_NAME)
         self.load_data()
+
 
     def load_data(self):
         # load high score
@@ -92,7 +93,7 @@ class Game:
 
         # spawn a mob?
         now = pg.time.get_ticks()
-        if now - self.mob_timer > 5000 + random.choice([-1000, -500, 0, 500, 1000]):
+        if now - self.mob_timer > 3500 + random.choice([-1000, -500, 0, 500, 1000]):
             self.mob_timer = now
             Mob(self)
         # hit mobs?
@@ -126,7 +127,7 @@ class Game:
             for mob in self.mobs:
                 mob.rect.y += max(abs(self.player.vel.y), 2)
             for plat in self.platforms:
-                plat.rect.y += max(abs(self.player.vel.y), 2)
+                plat.rect.y += max(abs(self.player.vel.y), 3)
                 if plat.rect.top >= HEIGHT:
                     plat.kill()
                     self.score += 10
@@ -150,7 +151,7 @@ class Game:
             self.running = False
 
         # spawn new platforms to keep same average number
-        while len(self.platforms) < 6:
+        while len(self.platforms) < 7:
             width = random.randrange(50, 100)
             Platform(self, random.randrange(0, WIDTH - width),
                      random.randrange(-75, -30))
@@ -169,6 +170,11 @@ class Game:
             if event.type == pg.KEYUP:
                 if event.key == pg.K_SPACE:
                     self.player.jump_cut()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    self.playing = False
+                self.running = False
+
 
     def draw(self):
         # Game Loop - draw

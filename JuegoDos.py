@@ -72,6 +72,7 @@ class JuegoDos:
         self.phantom = []
         self.masc = False
         self.music = True
+        self.help = True
 
 
     def on_init(self):
@@ -127,10 +128,14 @@ class JuegoDos:
                                 pygame.mixer.music.pause()
                                 icono.image = pygame.transform.scale(
                                     pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_OFF_J2.png")), (73, 73))
-                        elif icono.name == 'credits':
-                            pass
                         elif icono.name == 'help':
-                            pass
+                            self.help = not self.help
+                        if not self.help:
+                            icono.image = pygame.transform.scale(
+                                pygame.image.load(os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J2.png")), (73, 73))
+                        else:
+                            icono.image = pygame.transform.scale(
+                                pygame.image.load(os.path.join(IMAGE_FOLDER, "ayuda_J2.png")), (73, 73))
                 for Player in player:
                     if Player.getRect().collidepoint(event.pos) and Player.correct:
                         # Player.correct verfica que la silaba no este ya hubicada en el lugar correcto.
@@ -172,10 +177,11 @@ class JuegoDos:
         random.shuffle(lista_imagenesNulas)
 
         # Creo diccionarios segun la dificultad de juego
-        faciles = {'abanico':['a', 'ba', 'ni', 'co'], 'auto': ['au', 'to'], 'banana': ['ba','na','na'], 'elefante': ['e', 'le', 'fan', 'te'],
-                   'gato': ['ga', 'to'], 'goma': ['go', 'ma'], 'luna': ['lu', 'na'], 'mesa': ['me', 'sa'], 'moto': ['mo', 'to'],
-                   'oro': ['o', 'ro'],'oso': ['o', 'so'], 'oveja': ['o', 've', 'ja'], 'paleta': ['pa', 'le', 'ta'], 'pelota': ['pe', 'lo', 'ta'],
-                   'pato': ['pa', 'to'], 'sopa': ['so', 'pa'], 'uvas': ['u', 'vas'], 'vaca': ['va', 'ca'], 'gota': ['go', 'ta']}
+        faciles = {'abanico':['a', 'ba', 'ni', 'co'], 'elefante': ['e', 'le', 'fan', 'te'],
+                   'gato': ['ga', 'to'], 'goma': ['go', 'ma'], 'luna': ['lu', 'na'], 'mesa': ['me', 'sa'],
+                   'oro': ['o', 'ro'], 'oveja': ['o', 've', 'ja'], 'pelota': ['pe', 'lo', 'ta'],
+                    'uvas': ['u', 'vas'], 'vaca': ['va', 'ca'], 'perro': ['pe','rro'], 'percha': ['per','cha'],
+                   'sombrero': ['som', 'bre', 'ro'], 'diario': ['dia','rio']}
 
         # cargo en forma aleatoria un diccionario con dos palabras y sus correspondiente división en silabas
         dict_img = {}
@@ -261,6 +267,7 @@ class JuegoDos:
 
         # Seteo imagen que se mostrará al ganar
         image = Premio.Cartel_Premio(700, 300)
+        cartel = Imagen('cartel', os.path.join(IMAGE_FOLDER, "cartel_ayuda_J2.png"), 1100, 300, 317, 100)
 
         # Setea los iconos
         iconos = [Icono('quit', os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J2.png"), 1300, 50),
@@ -346,6 +353,10 @@ class JuegoDos:
 
             for jugador in jugadores:
                 jugador.update(self.screen)
+
+
+            if not self.help:
+                cartel.update(self.screen)
 
             # Draw / Render
             if self.win(image):

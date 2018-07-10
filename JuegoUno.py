@@ -71,6 +71,7 @@ class JuegoUno:
         self.crash = False
         self.finish = False
         self.music = True
+        self.help = True
 
 
 
@@ -128,7 +129,15 @@ class JuegoUno:
                                 icono.image = pygame.transform.scale(
                                     pygame.image.load(os.path.join(IMAGE_FOLDER, "musica_OFF_J1.png")), (73, 73))
                         elif icono.name == 'help':
-                            pass
+                            self.help = not self.help
+                            if not self.help:
+                                icono.image = pygame.transform.scale(
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J1.png")), (73, 73))
+                            else:
+                                icono.image = pygame.transform.scale(
+                                    pygame.image.load(os.path.join(IMAGE_FOLDER, "ayuda_J1.png")), (73, 73))
+
+
                 for Player in player:
                     if Player.getRect().collidepoint(event.pos):
                         #print('Click palabra')
@@ -264,6 +273,8 @@ class JuegoUno:
 
         # Seteo imagen que se mostrará al ganar
         image = Premio.Cartel_Premio(700, 300)
+        cartel =Imagen('cartel', os.path.join(IMAGE_FOLDER, "cartel_ayuda_J1.png"), 1100, 300, 317, 100)
+
 
 
         while self.running:
@@ -275,6 +286,9 @@ class JuegoUno:
 
 
             # Update
+
+
+
             for icono in iconos:
                 icono.update(self.screen)
                 if icono.rect.collidepoint(pygame.mouse.get_pos()):
@@ -287,6 +301,9 @@ class JuegoUno:
 
             for jugador in jugadores:
                 jugador.update(self.screen)
+
+            if not self.help:
+                cartel.update(self.screen)
 
             if self.hits == 3:
                 self.finish = True

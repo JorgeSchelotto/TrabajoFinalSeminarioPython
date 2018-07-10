@@ -100,7 +100,6 @@ class MainMenu:
                             self.running = False
                         elif icono.name == 'music':
                             self.music = not self.music
-                            print(icono.name)
                             if self.music:
                                 pygame.mixer.music.unpause()
                                 icono.image = pygame.transform.scale(pygame.image.load(os.path.join(IMAGE_FOLDER, "sonido_on.png")), (73, 73))
@@ -111,8 +110,6 @@ class MainMenu:
                         elif icono.name == 'credits':
                             self.juego = 'puntos'
                             self.running = False
-                        elif icono.name == 'help':
-                            pass
                         elif icono.name == 'j1':
                             self.juego = 'j1'
                             self.running = False
@@ -145,8 +142,7 @@ class MainMenu:
                   Icono('j4', JUEGOCUATRO_FOLDER, 1140, 610),
                   Icono('random', os.path.join(IMAGE_FOLDER, "shuffle.png"),190, 300),
                   Icono('music', os.path.join(IMAGE_FOLDER, "sonido_on.png"), 1250, 185),
-                  Icono('help', os.path.join(IMAGE_FOLDER, "ayuda.png"), 1250, 285),
-                  Icono('credits', os.path.join(IMAGE_FOLDER, "creditos.png"), 1250, 385)]
+                  Icono('credits', os.path.join(IMAGE_FOLDER, "creditos.png"), 1250, 290)]
 
 
         while self.running:
