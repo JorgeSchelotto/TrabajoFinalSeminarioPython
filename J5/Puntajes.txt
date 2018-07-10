@@ -57,3 +57,7 @@ Fecha: Mon Jul  9 22:43:09 2018 Juego: Jummpy Puntos: 230
 Fecha: Mon Jul  9 22:43:09 2018 Juego: Jummpy Puntos: 0
 Fecha: Mon Jul  9 22:43:09 2018 Juego: Jummpy Puntos: 0
 Fecha: Mon Jul  9 22:43:09 2018 Juego: Jummpy Puntos: 0
+Fecha: Mon Jul  9 22:43:09 2018 Juego: Jummpy Puntos: 200
+Fecha: Mon Jul  9 22:43:09 2018 Juego: Jummpy Puntos: 90
+Fecha: Mon Jul  9 22:43:09 2018 Juego: Jummpy Puntos: 0
+Fecha: Mon Jul  9 22:43:09 2018 Juego: Jummpy Puntos: 40

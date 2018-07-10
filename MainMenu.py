@@ -24,15 +24,15 @@ try:
 
     import pygame
     from pygame.locals import *
-    from Icono import Icono
-    import JuegoUno
-    import JuegoDos
-    import JuegoTres
-    import JuegoCuatro
+    from Clases.Icono import Icono
+    from J1 import JuegoUno
+    from J2 import JuegoDos
+    from J3 import JuegoTres
+    from J4 import JuegoCuatro
     import os
     import random
-    import Premio
-    import pantalla_puntos_clases
+    from Clases import Premio
+    from PantallaPuntos import pantalla_puntos_clases
 except ImportError as error:
     print(error, 'Error de importacion en modulo')
 
