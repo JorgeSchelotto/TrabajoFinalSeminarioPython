@@ -66,7 +66,16 @@ class JuegoCuatro:
         self.crash = False
         self.music = True
         self.help = True
+        self.nivel = None
 
+
+    def text(self, txt, x, y):
+        font = pygame.font.SysFont("Impact.otf", 40)
+        text = font.render(txt, True, (255,255,0))
+        text_rect = text.get_rect()
+        text_rect.centerx = x
+        text_rect.centery = y
+        self.screen.blit(text, text_rect)
 
 
     def on_init(self):
@@ -79,6 +88,31 @@ class JuegoCuatro:
         pygame.display.set_caption("Main Menu")
         pygame.mixer.music.load(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'JuegoCuatro.mp3'))
         pygame.mixer.music.play(loops=-1)
+
+    def dificultyLevels(self, facil, intermedio, dificil):
+        """Loop que realiza la seleccion de nivel de dificultad.
+        El for del final funciona como una pausa para que el juego cargue las fichas."""
+        # Loop de la seleccion de nivel
+        while self.nivel == None:
+            # Nosale si no elige nivel
+            pygame.draw.rect(self.screen, (50, 100, 255), (300, 50, 800, 600), 0)
+            pygame.draw.rect(self.screen, (50, 200, 200), (350, 200, 700, 400), 0)
+            self.text('Elegi el nivel de dificultad', 650, 100)
+            pygame.draw.rect(self.screen, (50, 200, 200), (350, 200, 700, 400), 0)
+            facil.update(self.screen)
+            intermedio.update(self.screen)
+            dificil.update(self.screen)
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == MOUSEBUTTONDOWN:
+                    if facil.rect.collidepoint(event.pos):
+                        self.nivel = 'faciles'
+                    if intermedio.rect.collidepoint(event.pos):
+                        self.nivel = 'intermedias'
+                    if dificil.rect.collidepoint(event.pos):
+                        self.nivel = 'difíciles'
+            for m in range(300):
+                pass
 
     def winMusic(self):
         """Reproduce sonido de ganador"""
@@ -154,11 +188,8 @@ class JuegoCuatro:
     def randomEnemigos(self):
         """Genera un diccionario aleatorio y sin repeticiones con los nombres y las direcciones de los archivos de letras"""
         game_folder = os.path.dirname(__file__)
-        enemies_folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "imagenes"), "faciles"), "palabras")
+        enemies_folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "imagenes"), self.nivel), "palabras")
         lista_enemigos = os.listdir(enemies_folder)
-
-        letra = ['A', 'E', 'I', 'O', 'U']
-
 
         con=[]
         while len(con) != 4:
@@ -184,8 +215,8 @@ class JuegoCuatro:
     def randomPlayers(self, dic_letras):
         """Genera un diccionario aleatorio y sin repeticiones con los nombres y las direcciones de los archivos de imagenes"""
         game_folder = os.path.dirname(__file__)
-        folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "Imagenes"), 'faciles'), 'imagenes')
-        players_folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "imagenes"), "faciles"), "palabras")
+        folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "Imagenes"), self.nivel), 'imagenes')
+        players_folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "imagenes"), self.nivel), "palabras")
         lista_players = os.listdir(players_folder)
 
 
@@ -218,9 +249,10 @@ class JuegoCuatro:
         for palabras in lista:
             pal2[palabras.replace('\n', '')] = os.path.join(os.path.join(
                 os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "imagenes"),
-                             'faciles'),"imagenes"), palabras).replace('\n', '')
-
+                             self.nivel),"imagenes"), palabras).replace('\n', '')
         return pal2
+
+
 
     def win(self, image):
         """Imprime una patalla de felicitaciones si se gano la partida."""
@@ -235,11 +267,17 @@ class JuegoCuatro:
         return bool
 
 
-
     def execute(self):
         """Loop del juego"""
 
         self.on_init()
+
+        # Seteo niveles
+        facil = Icono('facil', os.path.join(IMAGE_FOLDER, "1.png"), 500, 400)
+        intermedio = Icono('intermedio', os.path.join(IMAGE_FOLDER, "2.png"), 700, 400)
+        dificil = Icono('dificil', os.path.join(IMAGE_FOLDER, "3.png"), 900, 400)
+
+        self.dificultyLevels(facil, intermedio, dificil)
 
         # Setea pantalla de ganador
         image = Premio.Cartel_Premio('ganaste.png', 700, 300)

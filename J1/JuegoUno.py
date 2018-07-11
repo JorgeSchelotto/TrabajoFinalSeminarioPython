@@ -72,9 +72,40 @@ class JuegoUno:
         self.music = True
         self.help = True
         self.nivel = None
-        self.nivelOk= False
 
 
+
+    def text(self, txt, x, y):
+        font = pygame.font.SysFont("Impact.otf", 40)
+        text = font.render(txt, True, (255,255,0))
+        text_rect = text.get_rect()
+        text_rect.centerx = x
+        text_rect.centery = y
+        self.screen.blit(text, text_rect)
+
+    def dificultyLevels(self, facil, intermedio, dificil):
+        """Loop que realiza la seleccion de nivel de dificultad.
+        El for del final funciona como una pausa para que el juego cargue las fichas."""
+        # Loop de la seleccion de nivel
+        while self.nivel == None:
+            # Nosale si no elige nivel
+            pygame.draw.rect(self.screen, (50, 100, 255), (300, 50, 800, 600), 0)
+            pygame.draw.rect(self.screen, (50, 200, 200), (350, 200, 700, 400), 0)
+            self.text('Elegi el nivel de dificultad', 650, 100)
+            facil.update(self.screen)
+            intermedio.update(self.screen)
+            dificil.update(self.screen)
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == MOUSEBUTTONDOWN:
+                    if facil.rect.collidepoint(event.pos):
+                        self.nivel = 'facil'
+                    if intermedio.rect.collidepoint(event.pos):
+                        self.nivel = 'medio'
+                    if dificil.rect.collidepoint(event.pos):
+                        self.nivel = 'dificiles'
+            for m in range(300):
+                pass
 
     def on_init(self):
         """Inicializo pygame y creo la ventana principal"""
@@ -139,7 +170,6 @@ class JuegoUno:
                                     pygame.image.load(os.path.join(IMAGE_FOLDER, "ayuda_J1.png")), (73, 73))
                 for Player in player:
                     if Player.getRect().collidepoint(event.pos):
-                        #print('Click palabra')
                         Player.setClick(True)
             elif event.type == MOUSEBUTTONUP:
                 for Player in player:
@@ -257,28 +287,9 @@ class JuegoUno:
         intermedio = Icono('intermedio', os.path.join(IMAGE_FOLDER, "2.png"), 700, 400)
         dificil = Icono('dificil', os.path.join(IMAGE_FOLDER, "3.png"), 900, 400)
 
-        # Loop de la seleccion de nivel
-        while self.nivel==None:
-            # Nosale si no elige nivel
+        self.dificultyLevels(facil, intermedio, dificil)
 
-            pygame.draw.rect(self.screen, (50,200,200),(350,200,700,400),0)
-            facil.update(self.screen)
-            intermedio.update(self.screen)
-            dificil.update(self.screen)
-            pygame.display.update()
-            for event in pygame.event.get():
-                if event.type == MOUSEBUTTONDOWN:
-                    if facil.rect.collidepoint(event.pos):
-                        self.nivel = 'facil'
-                    if intermedio.rect.collidepoint(event.pos):
-                        self.nivel = 'medio'
-                    if dificil.rect.collidepoint(event.pos):
-                        self.nivel = 'dificiles'
-
-
-        print('listo nivel', self.nivel)
-
-
+        # Seteo iconos
         iconos = [Icono('quit', os.path.join(IMAGE_FOLDER, "cerrar_ayuda_J1.png"), 1300, 50),
                   Icono('music', os.path.join(IMAGE_FOLDER, "musica_ON_J1.png"), 1300, 155),
                   Icono('help', os.path.join(IMAGE_FOLDER, "ayuda_j1.png"), 1300, 255)]
@@ -308,8 +319,6 @@ class JuegoUno:
         cartel =Imagen('cartel', os.path.join(IMAGE_FOLDER, "cartel_ayuda_J1.png"), 1100, 300, 317, 100)
         nop = Premio.Cartel_Premio(ERROR_FOLDER, 700, 300)
 
-        for m in range(300):
-            print(m)
 
 
         while self.running:

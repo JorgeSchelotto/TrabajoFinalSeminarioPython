@@ -70,7 +70,16 @@ class JuegoTres:
         self.crash = False
         self.music = True
         self.help = True
+        self.nivel = None
 
+
+    def text(self, txt, x, y):
+        font = pygame.font.SysFont("Impact.otf", 40)
+        text = font.render(txt, True, (255,255,0))
+        text_rect = text.get_rect()
+        text_rect.centerx = x
+        text_rect.centery = y
+        self.screen.blit(text, text_rect)
 
 
     def on_init(self):
@@ -82,6 +91,32 @@ class JuegoTres:
         pygame.display.set_caption("Main Menu")
         pygame.mixer.music.load(os.path.join(os.path.join(GAME_FOLDER, 'Musica'), 'JuegoTres.mp3'))
         pygame.mixer.music.play(loops=-1)
+
+    def dificultyLevels(self, facil, intermedio, dificil):
+        """Loop que realiza la seleccion de nivel de dificultad.
+        El for del final funciona como una pausa para que el juego cargue las fichas."""
+        # Loop de la seleccion de nivel
+        while self.nivel == None:
+            # Nosale si no elige nivel
+
+            pygame.draw.rect(self.screen, (50, 100, 255), (300, 50, 800, 600), 0)
+            pygame.draw.rect(self.screen, (50, 200, 200), (350, 200, 700, 400), 0)
+            self.text('Elegi el nivel de dificultad', 700, 100)
+            facil.update(self.screen)
+            intermedio.update(self.screen)
+            dificil.update(self.screen)
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == MOUSEBUTTONDOWN:
+                    if facil.rect.collidepoint(event.pos):
+                        self.nivel = 'faciles'
+                    if intermedio.rect.collidepoint(event.pos):
+                        self.nivel = 'intermedias'
+                    if dificil.rect.collidepoint(event.pos):
+                        self.nivel = 'difíciles'
+            print(self.nivel)
+            for m in range(300):
+                pass
 
     def winMusic(self):
         """Reproduce sonido de ganador"""
@@ -159,12 +194,12 @@ class JuegoTres:
     def randomEnemigos(self):
         """Genera un diccionario aleatorio y sin repeticiones con los nombres y las direcciones de los archivos de letras"""
         game_folder = os.path.dirname(__file__)
-        enemies_folder = os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j3"), "imagenes"), "faciles")
+        enemies_folder = os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j3"), "imagenes"), self.nivel)
         lista_enemigos = os.listdir(enemies_folder)
 
         # Genero un diccionario cuya clave y valor son un elemento de lista_enemigos elegido en forma aleatoria.
         num = random.randrange(len(lista_enemigos)-1)
-        pal = [lista_enemigos[num].replace('\n', ''), os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j3"),"imagenes"), "faciles"), lista_enemigos[num]).replace('\n', '')))]
+        pal = [lista_enemigos[num].replace('\n', ''), os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j3"),"imagenes"), self.nivel), lista_enemigos[num]).replace('\n', '')))]
         return pal
 
 
@@ -173,7 +208,7 @@ class JuegoTres:
 
         # Creo lista con los nombres de las imagenes de la carpeta indicada
         game_folder = os.path.dirname(__file__)
-        enemies_folder = os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j3"), "imagenes"), "faciles")
+        enemies_folder = os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j3"), "imagenes"), self.nivel)
         lista_enemigos = os.listdir(enemies_folder)
 
         # Cargo una lista con palabras que empiesen con la misma letra que la imagen elegida en la funcion randomEnemigos()
@@ -207,7 +242,7 @@ class JuegoTres:
         for palabras in imagenes:
             pal2[palabras.replace('\n', '')] = os.path.join(
                 os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j3"), "Imagenes"),
-                             'faciles'), palabras).replace('\n', '')
+                             self.nivel), palabras).replace('\n', '')
 
 
         return pal2
@@ -231,6 +266,13 @@ class JuegoTres:
 
         self.on_init()
 
+        # Seteo niveles
+        facil = Icono('faciles', os.path.join(IMAGE_FOLDER, "1.png"), 500, 400)
+        intermedio = Icono('intermedio', os.path.join(IMAGE_FOLDER, "2.png"), 700, 400)
+        dificil = Icono('dificil', os.path.join(IMAGE_FOLDER, "3.png"), 900, 400)
+
+        self.dificultyLevels(facil, intermedio, dificil)
+
         # Setea pantalla de ganador
         image = Premio.Cartel_Premio('ganaste.png',700, 300)
         cartel = Imagen('cartel', os.path.join(IMAGE_FOLDER, "cartel_ayuda_J3.png"), 1100, 300, 317, 100)
@@ -239,8 +281,6 @@ class JuegoTres:
         iconos = [Icono('quit', os.path.join(IMG_FOLDER, "cerrar_ayuda_J3.png"), 1300, 50),
                   Icono('music', os.path.join(IMG_FOLDER, "musica_ON_J3.png"), 1300, 155),
                   Icono('help', os.path.join(IMG_FOLDER, "ayuda_J3.png"), 1300, 255)]
-
-
 
 
         # Cargo imagen del tacho
@@ -270,10 +310,6 @@ class JuegoTres:
                 jugadores.append(Palabras(ruta, nombre.replace('.png', ''), PALABRAS_X_ARRIVA, PALABRAS_Y_ARRIVA))
                 PALABRAS_X_ARRIVA = PALABRAS_X_ARRIVA + 320
                 cant = cant + 1
-
-
-
-
 
         while self.running:
             """Loop principal del programa"""

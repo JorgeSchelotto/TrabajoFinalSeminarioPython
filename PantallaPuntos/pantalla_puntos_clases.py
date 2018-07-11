@@ -104,6 +104,28 @@ class pantalla_puntos():
 
 
     def imprime_texto(self, NARANJA, TAMAÑO):
+
+        font = pygame.font.SysFont("Comic Sans.otf", 30)
+        text = font.render('LOS MEJORES 10 PUNTAJES SON', True, NARANJA)
+        text_rect = text.get_rect()
+        text_rect.centerx = 650
+        text_rect.centery = 100
+        self.screen.blit(text, text_rect)
+
+        for n, linea in enumerate(self.lista_final[0:10]):
+            text = font.render(linea, True, NARANJA)
+            text_rect = text.get_rect()
+            text_rect.centerx = TAMAÑO[0]
+            text_rect.centery = n * 50 + 150
+            self.screen.blit(text, text_rect)
+
+
+
+
+    def execute(self):
+
+        self.on_init()
+        icono = Icono('quit', os.path.join(IMAGE_FOLDER, "quit_suite.png"), 1250, 85)
         lista_puntajes = []
         ruta = os.path.join(os.path.join(ARCHIVO, 'J5'), 'Puntajes.txt')
         try:
@@ -120,24 +142,6 @@ class pantalla_puntos():
         except IOError as e:
             print(e)
 
-        font = pygame.font.SysFont("Comic Sans.otf", 30)
-        text = font.render('LOS MEJORES 10 PUNTAJES SON', True, NARANJA)
-        text_rect = text.get_rect()
-        text_rect.centerx = 650
-        text_rect.centery = 100
-        self.screen.blit(text, text_rect)
-        for n, linea in enumerate(self.lista_final[0:10]):
-            text = font.render(linea, True, NARANJA)
-            text_rect = text.get_rect()
-            text_rect.centerx = TAMAÑO[0]
-            text_rect.centery = n * 50 + 150
-            self.screen.blit(text, text_rect)
-
-    def execute(self):
-
-
-        self.on_init()
-        icono = Icono('quit', os.path.join(IMAGE_FOLDER, "quit_suite.png"), 1250, 85)
 
         while self.running:
             print(ARCHIVO)

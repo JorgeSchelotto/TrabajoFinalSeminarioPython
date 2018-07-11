@@ -245,7 +245,7 @@ class Game:
         try:
             file_status_array = os.stat(__file__)
             with open(os.path.join(self.dir, 'Puntajes.txt'), 'a') as f:
-                f.writelines('Fecha: {} Juego: Jummpy Puntos: {}\n'.format(str(time.ctime(file_status_array[7])), str(self.score)))
+                f.writelines('Fecha: {} Juego: Jummpy Puntos: {}\n'.format(str(time.ctime(file_status_array[8])), str(self.score)))
         except OSError as e:
             print(e)
             f = open(os.path.join(self.dir, 'Puntajes.txt'), 'w')

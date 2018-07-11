@@ -56,6 +56,7 @@ JUEGOCUATRO_FOLDER = os.path.join(os.path.join(os.path.join(GAME_FOLDER, "Imagen
 MUSIC_FOLDER = None
 SOUNDS_FOLDER = None
 
+
 class MainMenu:
     """Menu principal del juego"""
     def __init__(self):

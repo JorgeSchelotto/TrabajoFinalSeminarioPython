@@ -73,6 +73,41 @@ class JuegoDos:
         self.masc = False
         self.music = True
         self.help = True
+        self.nivel = None
+
+
+    def text(self, txt, x, y):
+        font = pygame.font.SysFont("Impact.otf", 40)
+        text = font.render(txt, True, (255,255,0))
+        text_rect = text.get_rect()
+        text_rect.centerx = x
+        text_rect.centery = y
+        self.screen.blit(text, text_rect)
+
+    def dificultyLevels(self, facil, intermedio, dificil):
+        """Loop que realiza la seleccion de nivel de dificultad.
+        El for del final funciona como una pausa para que el juego cargue las fichas."""
+        # Loop de la seleccion de nivel
+        while self.nivel == None:
+            # Nosale si no elige nivel
+
+            pygame.draw.rect(self.screen, (50, 100, 255), (300, 50, 800, 600), 0)
+            pygame.draw.rect(self.screen, (50, 200, 200), (350, 200, 700, 400), 0)
+            self.text('Elegi el nivel de dificultad', 700, 100)
+            facil.update(self.screen)
+            intermedio.update(self.screen)
+            dificil.update(self.screen)
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == MOUSEBUTTONDOWN:
+                    if facil.rect.collidepoint(event.pos):
+                        self.nivel = 'faciles'
+                    if intermedio.rect.collidepoint(event.pos):
+                        self.nivel = 'intermedias'
+                    if dificil.rect.collidepoint(event.pos):
+                        self.nivel = 'dificiles'
+            for m in range(300):
+                pass
 
 
     def on_init(self):
@@ -177,17 +212,25 @@ class JuegoDos:
         random.shuffle(lista_imagenesNulas)
 
         # Creo diccionarios segun la dificultad de juego
-        faciles = {'abanico':['a', 'ba', 'ni', 'co'], 'elefante': ['e', 'le', 'fan', 'te'],
+        faciles = {'abanico': ['a', 'ba', 'ni', 'co'], 'elefante': ['e', 'le', 'fan', 'te'],
                    'gato': ['ga', 'to'], 'goma': ['go', 'ma'], 'luna': ['lu', 'na'], 'mesa': ['me', 'sa'],
                    'oro': ['o', 'ro'], 'oveja': ['o', 've', 'ja'], 'pelota': ['pe', 'lo', 'ta'],
-                    'uvas': ['u', 'vas'], 'vaca': ['va', 'ca'], 'perro': ['pe','rro'], 'percha': ['per','cha'],
-                   'sombrero': ['som', 'bre', 'ro'], 'diario': ['dia','rio']}
+                   'uvas': ['u', 'vas'], 'vaca': ['va', 'ca'], 'perro': ['pe', 'rro'], 'percha': ['per', 'cha'],
+                   'sombrero': ['som', 'bre', 'ro'], 'diario': ['dia', 'rio']}
+
+
+
+
 
         # cargo en forma aleatoria un diccionario con dos palabras y sus correspondiente división en silabas
         dict_img = {}
+        nivel = []
         for num in range(2):
+            if self.nivel != None:
+                # si se eligio nivel
+                nivel = faciles.copy()
             img = lista_imagenesNulas[num]
-            dict_img[img] = [faciles[img.replace('.png', '')], os.path.join(imagenesNulas_folder, img)]
+            dict_img[img] = [nivel[img.replace('.png', '')], os.path.join(imagenesNulas_folder, img)]
 
         return dict_img
 
@@ -264,6 +307,15 @@ class JuegoDos:
         """Loop del juego"""
 
         self.on_init()
+
+        # Seteo niveles
+        facil = Icono('facil', os.path.join(IMAGE_FOLDER, "1.png"), 500, 400)
+        intermedio = Icono('intermedio', os.path.join(IMAGE_FOLDER, "2.png"), 700, 400)
+        dificil = Icono('dificil', os.path.join(IMAGE_FOLDER, "3.png"), 900, 400)
+
+
+        # Pantalla de seleccion de nivel
+        self.dificultyLevels(facil, intermedio, dificil)
 
         # Seteo imagen que se mostrará al ganar
         image = Premio.Cartel_Premio('ganaste.png',700, 300)
