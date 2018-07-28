@@ -144,7 +144,6 @@ class pantalla_puntos():
 
 
         while self.running:
-            print(ARCHIVO)
             """Loop principal del programa"""
             self.clock.tick(self.FPS)
             self.screen.blit(self.image, (0, 0))
@@ -162,7 +161,7 @@ class pantalla_puntos():
             # flipea la pantalla
             pygame.display.update()
 
-        self.clean_up()
+        # self.clean_up()
 
 
         menu = MainMenu.MainMenu()

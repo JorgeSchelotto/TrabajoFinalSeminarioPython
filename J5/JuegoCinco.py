@@ -253,6 +253,7 @@ class Game:
             print('Se creo el archivo Puntajes.txt')
 
         pg.quit()
+
         main = MainMenu.MainMenu()
         main.execute()
 

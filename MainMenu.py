@@ -136,6 +136,7 @@ class MainMenu:
 
     def execute(self):
         """Loop del juego"""
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
         self.on_init()
         iconos = [Icono('j1', JUEGOUNO_FOLDER, 240, 610), Icono('j2', JUEGODOS_FOLDER, 540, 610), Icono('j3', JUEGOTRES_FOLDER, 840, 610),
@@ -177,7 +178,7 @@ class MainMenu:
             # flipea la pantalla
             pygame.display.update()
 
-        self.clean_up()
+
 
         if self.juego == 'j1':
             juego = JuegoUno.JuegoUno()
@@ -194,6 +195,8 @@ class MainMenu:
         elif self.juego== 'puntos':
             juego = pantalla_puntos_clases.pantalla_puntos()
             juego.execute()
+
+        self.clean_up()
 
 if __name__ == "__main__":
     mainMenu = MainMenu()

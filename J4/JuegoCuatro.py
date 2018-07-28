@@ -344,9 +344,9 @@ class JuegoCuatro:
             # update la pantalla
             pygame.display.update()
 
-        self.clean_up()
-        print(self.hits)
-        if self.hits == 4 :
+        # self.clean_up()
+
+        if self.hits == 4:
             j5 = Game()
             j5.execute()
         else:

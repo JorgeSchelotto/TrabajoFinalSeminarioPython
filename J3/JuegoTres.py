@@ -353,7 +353,7 @@ class JuegoTres:
             # update la pantalla
             pygame.display.update()
 
-        self.clean_up()
+        # self.clean_up()
         if self.hits >= 1 :
             j5 = JuegoCinco.Game()
             j5.execute()

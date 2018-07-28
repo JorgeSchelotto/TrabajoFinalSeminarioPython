@@ -326,10 +326,6 @@ class JuegoUno:
             self.clock.tick(self.FPS)
             self.screen.blit(self.image, (0, 0))
 
-
-
-
-
             # Update
             for icono in iconos:
                 icono.update(self.screen)
@@ -366,8 +362,7 @@ class JuegoUno:
 
 
 
-        self.clean_up()
-        print(self.hits)
+        # self.clean_up()
 
         if self.hits >= 3 :
             j5 = Game()

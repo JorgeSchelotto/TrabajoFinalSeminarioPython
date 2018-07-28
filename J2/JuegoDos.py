@@ -417,7 +417,7 @@ class JuegoDos:
             # update la pantalla
             pygame.display.update()
 
-        self.clean_up()
+        # self.clean_up()
         if self.goal != 0 and self.hits == self.goal :
             j5 = Game()
             j5.execute()
