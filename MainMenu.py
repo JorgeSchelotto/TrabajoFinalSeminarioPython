@@ -20,23 +20,19 @@ Al cerrarla, se cerrara el programa"""
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-try:
 
-    import pygame
-    from pygame.locals import *
-    from Clases.Icono import Icono
-    from J1 import JuegoUno
-    from J2 import JuegoDos
-    from J3 import JuegoTres
-    from J4 import JuegoCuatro
-    import os
-    import random
-    from Clases import Premio
-    from PantallaPuntos import pantalla_puntos_clases
-except ImportError as error:
-    print(error, 'Error de importacion en modulo')
-
-
+import pygame
+from pygame.locals import *
+from Clases.Icono import Icono
+from J1 import JuegoUno
+from J2 import JuegoDos
+from J3 import JuegoTres
+from J4 import JuegoCuatro
+import os
+import random
+from Clases import Premio
+from PantallaPuntos import pantalla_puntos_clases
+    
 __author__ = 'Burgos, Agustin - Schelotto, Jorge'
 __copyright__ = 'Copyright 2018, Burgos Schelotto'
 __license__ = 'MIT'
