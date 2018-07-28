@@ -176,10 +176,10 @@ class JuegoUno:
                     Player.setClick(False)
                     for Enemigo in enemigos:
                         if pygame.sprite.collide_rect(Player, Enemigo):
-                            if Player.getPalabra()[0].upper() != Enemigo.getNombre():
+                            if Player.getPalabra()[0].lower() != Enemigo.getNombre().lower():
                                 self.beepLose()
                                 self.nop(image)
-                            if Player.getPalabra()[0].upper() == Enemigo.getNombre():
+                            if Player.getPalabra()[0].lower() == Enemigo.getNombre().lower():
                                 self.beepWin()
                                 Player.rect.center = Enemigo.rect.center
                                 Player.collide = True
@@ -254,7 +254,7 @@ class JuegoUno:
         for palabras in lista:
             pal2[palabras.replace('\n', '')] = os.path.join(
                 os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j1"), "Imagenes"),
-                             self.nivel), palabras).replace('\n', '')
+                             self.nivel), palabras.lower()).replace('\n', '')
 
 
         return pal2

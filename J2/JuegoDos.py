@@ -181,9 +181,9 @@ class JuegoDos:
                     Player.setClick(False)
                     for Enemigo in enemigos:
                         if pygame.sprite.collide_rect(Player, Enemigo):
-                            if Player.getPalabra().upper() != Enemigo.getNombre().upper():
+                            if Player.getPalabra().lower() != Enemigo.getNombre().lower():
                                 self.beepLose()
-                            if Player.getPalabra().upper() == Enemigo.getNombre().upper():
+                            if Player.getPalabra().lower() == Enemigo.getNombre().lower():
                                 Player.collide = True
                                 self.beepWin()
                                 if Enemigo.getNombre() not in self.phantom:
@@ -193,7 +193,7 @@ class JuegoDos:
                                         if Enemigo.getNombre().lower() in self.phantom:
                                             mascara.append(
                                                 ImagenNula(Enemigo.getNombre(),
-                                                           os.path.join(phantons, Enemigo.getNombre().upper() + '.png'),
+                                                           os.path.join(phantons, Enemigo.getNombre() + '.png'),
                                                            Enemigo.rect.center[0], Enemigo.rect.center[1], 100, 50))
                                 self.crash = True
                                 self.masc = True
@@ -252,7 +252,7 @@ class JuegoDos:
 
         pal2 = {}
         for palabras in lista:
-            pal2[palabras.replace('\n', '').upper()] = os.path.join(enemies_folder, palabras)
+            pal2[palabras.replace('\n', '')] = os.path.join(enemies_folder, palabras)
 
         return pal2
 

@@ -173,9 +173,9 @@ class JuegoCuatro:
                     Player.setClick(False)
                     for Enemigo in enemigos:
                         if pygame.sprite.collide_rect(Player, Enemigo):
-                            if Player.getPalabra().upper() != Enemigo.getNombre():
+                            if Player.getPalabra().lower() != Enemigo.getNombre().lower():
                                 self.beepLose()
-                            if Player.getPalabra().upper() == Enemigo.getNombre():
+                            if Player.getPalabra().lower() == Enemigo.getNombre().lower():
                                 self.beepWin()
                                 Player.rect.center = Enemigo.rect.center
                                 Player.collide = True
@@ -208,14 +208,12 @@ class JuegoCuatro:
         for palabras in lista:
             pal2[palabras.replace('\n', '').upper()] = os.path.join(enemies_folder, palabras)
 
-        print(pal2)
 
         return pal2
 
     def randomPlayers(self, dic_letras):
         """Genera un diccionario aleatorio y sin repeticiones con los nombres y las direcciones de los archivos de imagenes"""
         game_folder = os.path.dirname(__file__)
-        folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "Imagenes"), self.nivel), 'imagenes')
         players_folder = os.path.join(os.path.join(os.path.join(os.path.join(os.path.join(game_folder, "Imagenes"), "j4"), "imagenes"), self.nivel), "palabras")
         lista_players = os.listdir(players_folder)
 
@@ -223,7 +221,7 @@ class JuegoCuatro:
 
         # Creo una lista de numeros aleatorios.
         con = []
-        while len(con) < 4:
+        while len(con) < 3:
             valor = random.randrange(len(lista_players)-1)
             if valor not in con:
                 con.append(valor)
@@ -235,7 +233,7 @@ class JuegoCuatro:
             if lista_players[num].upper() in dic_letras:
                 # si esta en el diccionario de palabras
                 lista.append(lista_players[num])
-                letras.append(lista_players[num][0].upper())
+                letras.append(lista_players[num][0])
             num = num +1
 
 
@@ -299,13 +297,15 @@ class JuegoCuatro:
             letras_x = letras_x + 345
 
         # Setea las fichas del jugador
-        dic_jugadores = self.randomPlayers(dic_letras).copy()
+        dic_jugadores = self.randomPlayers(dic_letras)
         jugadores = []
         PALABRAS_X = 200
         PALABRAS_Y = 570
         for nombre, ruta in dic_jugadores.items():
             jugadores.append(Palabras(ruta, nombre, PALABRAS_X, PALABRAS_Y))
             PALABRAS_X = PALABRAS_X + 320
+            if len(jugadores) == 4:
+                break
 
 
 

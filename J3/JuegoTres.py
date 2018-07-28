@@ -178,9 +178,9 @@ class JuegoTres:
                 for Player in player:
                     Player.setClick(False)
                     if pygame.sprite.collide_rect(Player, Enemigo):
-                        if Player.getPalabra()[0] == Enemigo.getNombre()[0]:
+                        if Player.getPalabra()[0].lower() == Enemigo.getNombre()[0].lower():
                             self.beepLose()
-                        if Player.getPalabra()[0] != Enemigo.getNombre()[0]:
+                        if Player.getPalabra()[0].lower() != Enemigo.getNombre()[0].lower():
                             self.beepWin()
                             Player.rect.center = Enemigo.rect.center
                             Player.image = pygame.transform.scale(Player.image, (0, 0))
